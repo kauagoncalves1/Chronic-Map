@@ -22,7 +22,7 @@
                     <form action="login_processa.php" method="POST">
                         <div class="mb-3">
                             <label for="email" class="form-label">E-mail</label>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="seuemail@exemplo.com" required>
+                            <input type="email" name="email" id="email" class="form-control" placeholder="email@exemplo.com" required>
                         </div>
 
                         <div class="mb-3">
