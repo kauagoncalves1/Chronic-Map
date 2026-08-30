@@ -13,7 +13,7 @@
     <div class="container">
         <a class="navbar-brand fw-bold" href="dashboard.php">Chronic Map</a>
         <div class="d-flex align-items-center">
-            <button id="btnThemeToggle" class="btn btn-outline-light btn-sm me-2">🌙 Escuro</button>
+            <button id="btnThemeToggle" type="button" class="btn btn-outline-light btn-sm me-2">🌙 Escuro</button>
             <a href="dashboard.php" class="btn btn-outline-light btn-sm">Voltar ao Painel</a>
         </div>
     </div>
@@ -22,7 +22,6 @@
 <div class="container py-4">
     <h2 class="fw-bold mb-4">Seu Progresso de Aprendizado</h2>
 
-    <!-- Métricas Gerais -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card p-3 border-0 shadow-sm text-center">
@@ -44,7 +43,6 @@
         </div>
     </div>
 
-    <!-- Barra de Evolução -->
     <div class="card p-4 border-0 shadow-sm mb-4">
         <h5 class="fw-bold mb-3">Evolução da Trilha</h5>
         <div class="progress" style="height: 25px;">
@@ -55,23 +53,28 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Calcula o número total de mensagens salvas no LocalStorage do Chat
-const historico = JSON.parse(localStorage.getItem('chat_historico') || '[]');
-document.getElementById('totalMensagens').textContent = historico.length;
+document.addEventListener('DOMContentLoaded', () => {
+    const historico = JSON.parse(localStorage.getItem('chat_historico') || '[]');
+    const totalElement = document.getElementById('totalMensagens');
+    if (totalElement) {
+        totalElement.textContent = historico.length;
+    }
 
-// Script do Tema
-const toggleBtn = document.getElementById('btnThemeToggle');
-const currentTheme = localStorage.getItem('theme') || 'dark';
-document.documentElement.setAttribute('data-theme', currentTheme);
-if (toggleBtn) {
-    toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-    toggleBtn.addEventListener('click', () => {
-        let theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        toggleBtn.textContent = theme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-    });
-}
+    const toggleBtn = document.getElementById('btnThemeToggle');
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+
+    if (toggleBtn) {
+        toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            let theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            toggleBtn.textContent = theme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+        });
+    }
+});
 </script>
 </body>
 </html>

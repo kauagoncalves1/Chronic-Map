@@ -27,7 +27,7 @@
     <div class="container">
         <a class="navbar-brand fw-bold" href="dashboard.php">Chronic Map</a>
         <div class="d-flex align-items-center">
-            <button id="btnThemeToggle" class="btn btn-outline-light btn-sm me-2">🌙 Escuro</button>
+            <button id="btnThemeToggle" type="button" class="btn btn-outline-light btn-sm me-2">🌙 Escuro</button>
             <a href="dashboard.php" class="btn btn-outline-light btn-sm">Voltar ao Painel</a>
         </div>
     </div>
@@ -36,7 +36,6 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-9">
-            
             <div class="card shadow-sm border-0">
                 <div class="card-header py-3 d-flex align-items-center border-bottom">
                     <h5 class="fw-bold mb-0 text-primary">Assistente do Aluno</h5>
@@ -59,101 +58,101 @@
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-const chatContainer = document.getElementById('chatContainer');
-const chatForm = document.getElementById('chatForm');
-const inputMensagem = document.getElementById('inputMensagem');
+document.addEventListener('DOMContentLoaded', () => {
+    const chatContainer = document.getElementById('chatContainer');
+    const chatForm = document.getElementById('chatForm');
+    const inputMensagem = document.getElementById('inputMensagem');
 
-function carregarHistorico() {
-    const historico = JSON.parse(localStorage.getItem('chat_historico') || '[]');
-    
-    if (historico.length > 0) {
-        chatContainer.innerHTML = '';
-        historico.forEach(msg => {
-            renderizarMensagem(msg.autor, msg.texto);
+    function carregarHistorico() {
+        const historico = JSON.parse(localStorage.getItem('chat_historico') || '[]');
+        if (historico.length > 0) {
+            chatContainer.innerHTML = '';
+            historico.forEach(msg => {
+                renderizarMensagem(msg.autor, msg.texto);
+            });
+        }
+    }
+
+    function renderizarMensagem(autor, texto) {
+        let mensagemHtml = '';
+        if (autor === 'user') {
+            mensagemHtml = `
+                <div class="d-flex justify-content-end mb-3">
+                    <div class="message-user bg-primary text-white p-3 shadow-sm">
+                        <small class="fw-bold text-light d-block mb-1 me-2 text-end">Você</small>
+                        ${escapeHtml(texto)}
+                    </div>
+                </div>
+            `;
+        } else {
+            mensagemHtml = `
+                <div class="d-flex mb-3">
+                    <div class="message-ai p-3 shadow-sm border">
+                        <small class="fw-bold text-primary d-block mb-1">IA Chronic Map</small>
+                        ${escapeHtml(texto)}
+                    </div>
+                </div>
+            `;
+        }
+        chatContainer.insertAdjacentHTML('beforeend', mensagemHtml);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function salvarNoLocalStorage(autor, texto) {
+        const historico = JSON.parse(localStorage.getItem('chat_historico') || '[]');
+        historico.push({ autor, texto });
+        localStorage.setItem('chat_historico', JSON.stringify(historico));
+    }
+
+    if (chatForm) {
+        chatForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const mensagemTexto = inputMensagem.value.trim();
+            if (!mensagemTexto) return;
+
+            renderizarMensagem('user', mensagemTexto);
+            salvarNoLocalStorage('user', mensagemTexto);
+            inputMensagem.value = '';
+
+            setTimeout(() => {
+                const respostaIA = "Entendido! Essa mensagem será processada pelo backend em PHP quando a API for conectada.";
+                renderizarMensagem('ai', respostaIA);
+                salvarNoLocalStorage('ai', respostaIA);
+            }, 800);
         });
     }
-}
 
-function renderizarMensagem(autor, texto) {
-    let mensagemHtml = '';
-
-    if (autor === 'user') {
-        mensagemHtml = `
-            <div class="d-flex justify-content-end mb-3">
-                <div class="message-user bg-primary text-white p-3 shadow-sm">
-                    <small class="fw-bold text-light d-block mb-1 me-2 text-end">Você</small>
-                    ${escapeHtml(texto)}
-                </div>
-            </div>
-        `;
-    } else {
-        mensagemHtml = `
-            <div class="d-flex mb-3">
-                <div class="message-ai p-3 shadow-sm border">
-                    <small class="fw-bold text-primary d-block mb-1">IA Chronic Map</small>
-                    ${escapeHtml(texto)}
-                </div>
-            </div>
-        `;
+    function escapeHtml(text) {
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
-    chatContainer.insertAdjacentHTML('beforeend', mensagemHtml);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-}
+    carregarHistorico();
 
-function salvarNoLocalStorage(autor, texto) {
-    const historico = JSON.parse(localStorage.getItem('chat_historico') || '[]');
-    historico.push({ autor, texto });
-    localStorage.setItem('chat_historico', JSON.stringify(historico));
-}
+    // Dark Mode Script
+    const toggleBtn = document.getElementById('btnThemeToggle');
+    const currentTheme = localStorage.getItem('theme') || 'dark';
 
-chatForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const mensagemTexto = inputMensagem.value.trim();
-    if (!mensagemTexto) return;
+    document.documentElement.setAttribute('data-theme', currentTheme);
 
-    renderizarMensagem('user', mensagemTexto);
-    salvarNoLocalStorage('user', mensagemTexto);
+    if (toggleBtn) {
+        toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            let theme = document.documentElement.getAttribute('data-theme');
+            let newTheme = theme === 'dark' ? 'light' : 'dark';
 
-    inputMensagem.value = '';
-
-    setTimeout(() => {
-        const respostaIA = "Entendido! Essa mensagem será processada pelo backend em PHP quando a API for conectada.";
-        renderizarMensagem('ai', respostaIA);
-        salvarNoLocalStorage('ai', respostaIA);
-    }, 800);
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            toggleBtn.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+        });
+    }
 });
-
-function escapeHtml(text) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-carregarHistorico();
-
-const toggleBtn = document.getElementById('btnThemeToggle');
-const currentTheme = localStorage.getItem('theme') || 'dark';
-
-document.documentElement.setAttribute('data-theme', currentTheme);
-
-if (toggleBtn) {
-    toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-    
-    toggleBtn.addEventListener('click', () => {
-        let theme = document.documentElement.getAttribute('data-theme');
-        let newTheme = theme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        toggleBtn.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-    });
-}
 </script>
 </body>
 </html>

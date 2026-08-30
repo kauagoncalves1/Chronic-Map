@@ -13,9 +13,8 @@
     <div class="container">
         <a class="navbar-brand fw-bold" href="dashboard.php">Chronic Map</a>
         <div class="d-flex align-items-center">
-            <!-- Altere esta linha -->
-<span class="navbar-text text-white me-3" id="nomeUsuarioNavbar">Bem-vindo!</span>
-            <button id="btnThemeToggle" class="btn btn-outline-light btn-sm me-2">🌙 Escuro</button>
+            <span class="navbar-text text-white me-3" id="nomeUsuarioNavbar">Bem-vindo!</span>
+            <button id="btnThemeToggle" type="button" class="btn btn-outline-light btn-sm me-2">🌙 Escuro</button>
             <a href="index.php" class="btn btn-outline-light btn-sm">Sair</a>
         </div>
     </div>
@@ -45,7 +44,6 @@
                 <div class="card-body">
                     <h5 class="card-title fw-bold text-primary">Mapas Mentais</h5>
                     <p class="card-text">Explore os cronogramas e estruturas visuais do seu plano de aprendizado.</p>
-                    <!-- Altere de href="#" para href="mapas.php" -->
                     <a href="mapas.php" class="btn btn-outline-primary w-100 mt-2">Ver Mapas</a>
                 </div>
             </div>
@@ -56,7 +54,6 @@
                 <div class="card-body">
                     <h5 class="card-title fw-bold text-primary">Atividades e Progresso</h5>
                     <p class="card-text">Acompanhe suas matérias, entregas e evolução no portal.</p>
-                    <!-- Altere de href="#" para href="progresso.php" -->
                     <a href="progresso.php" class="btn btn-outline-primary w-100 mt-2">Ver Progresso</a>
                 </div>
             </div>
@@ -64,33 +61,36 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Pega o nome salvo ou usa 'Estudante' se estiver vazio
-const nomeSalvo = localStorage.getItem('usuario_nome') || 'Estudante';
-const navbarElement = document.getElementById('nomeUsuarioNavbar');
+document.addEventListener('DOMContentLoaded', () => {
+    // Carrega Nome Salvo
+    const nomeSalvo = localStorage.getItem('usuario_nome') || 'Estudante';
+    const navbarElement = document.getElementById('nomeUsuarioNavbar');
+    if (navbarElement) {
+        navbarElement.textContent = `Bem-vindo, ${nomeSalvo}!`;
+    }
 
-if (navbarElement) {
-    navbarElement.textContent = `Bem-vindo, ${nomeSalvo}!`;
-}
+    // Gerencia Tema Claro/Escuro
+    const toggleBtn = document.getElementById('btnThemeToggle');
+    const currentTheme = localStorage.getItem('theme') || 'dark';
 
-// Código do Dark Mode
-const toggleBtn = document.getElementById('btnThemeToggle');
-const currentTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', currentTheme);
 
-document.documentElement.setAttribute('data-theme', currentTheme);
+    if (toggleBtn) {
+        toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
 
-if (toggleBtn) {
-    toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-    
-    toggleBtn.addEventListener('click', () => {
-        let theme = document.documentElement.getAttribute('data-theme');
-        let newTheme = theme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        toggleBtn.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-    });
-}
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const theme = document.documentElement.getAttribute('data-theme');
+            const newTheme = theme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            toggleBtn.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+        });
+    }
+});
 </script>
 </body>
 </html>

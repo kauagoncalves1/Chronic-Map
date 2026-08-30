@@ -10,7 +10,7 @@
 <body class="d-flex align-items-center vh-100">
 
 <div class="position-absolute top-0 end-0 p-3">
-    <button id="btnThemeToggle" class="btn btn-outline-primary btn-sm">🌙 Escuro</button>
+    <button id="btnThemeToggle" type="button" class="btn btn-outline-primary btn-sm">🌙 Escuro</button>
 </div>
 
 <div class="container">
@@ -23,7 +23,7 @@
                         <p class="text-muted">Portal de Estudos com IA</p>
                     </div>
 
-                    <form action="dashboard.php" method="POST">
+                    <form id="formLogin" action="dashboard.php" method="POST">
                         <div class="mb-3">
                             <label for="email" class="form-label">E-mail</label>
                             <input type="email" name="email" id="email" class="form-control" placeholder="email@exemplo.com" required>
@@ -48,28 +48,33 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-const toggleBtn = document.getElementById('btnThemeToggle');
-const currentTheme = localStorage.getItem('theme') || 'dark';
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('btnThemeToggle');
+    const currentTheme = localStorage.getItem('theme') || 'dark';
 
-document.documentElement.setAttribute('data-theme', currentTheme);
+    document.documentElement.setAttribute('data-theme', currentTheme);
 
-if (toggleBtn) {
-    toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-    
-    toggleBtn.addEventListener('click', () => {
-        let theme = document.documentElement.getAttribute('data-theme');
-        let newTheme = theme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        toggleBtn.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-    });
-}
+    if (toggleBtn) {
+        toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
 
-// Captura o login/e-mail antes de enviar o formulário
-document.querySelector('form').addEventListener('submit', function() {
-    const emailInput = document.getElementById('email').value.split('@')[0];
-    localStorage.setItem('usuario_nome', emailInput || 'Estudante');
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const theme = document.documentElement.getAttribute('data-theme');
+            const newTheme = theme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            toggleBtn.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+        });
+    }
+
+    const formLogin = document.getElementById('formLogin');
+    if (formLogin) {
+        formLogin.addEventListener('submit', function() {
+            const emailInput = document.getElementById('email').value.split('@')[0];
+            localStorage.setItem('usuario_nome', emailInput || 'Estudante');
+        });
+    }
 });
 </script>
 </body>
