@@ -1,0 +1,68 @@
+:root {
+    --bg-body: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-color: #212529;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --primary-accent: #0d6efd;
+    --chat-user-bg: #0d6efd;
+    --chat-ai-bg: #ffffff;
+}
+
+[data-theme="dark"] {
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --text-color: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --primary-accent: #38bdf8;
+    --chat-user-bg: #0284c7;
+    --chat-ai-bg: #334155;
+}
+
+body {
+    background-color: var(--bg-body) !important;
+    color: var(--text-color) !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card, .card-header, .card-footer {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.form-control, .form-select {
+    background-color: var(--bg-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-card) !important;
+    color: var(--text-color) !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-muted) !important;
+}
+
+.message-ai {
+    background-color: var(--chat-ai-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .chat-box {
+        height: 380px !important;
+    }
+}

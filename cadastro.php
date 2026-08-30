@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chronic Map - Cadastro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 </head>
-<body class="bg-light py-5">
+<body class="py-5">
+
+<div class="position-absolute top-0 end-0 p-3">
+    <button id="btnThemeToggle" class="btn btn-outline-primary btn-sm">🌙 Escuro</button>
+</div>
 
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-5">
+        <div class="col-12 col-md-8 col-lg-6">
             <div class="card shadow border-0">
                 <div class="card-body p-4">
                     <div class="text-center mb-4">
@@ -19,24 +24,19 @@
                     </div>
 
                     <form id="formCadastro" action="cadastro_processa.php" method="POST" novalidate>
-
-                        <!--nome completo-->
+                        <!-- Nome Completo -->
                         <div class="mb-3">
                             <label for="nome" class="form-label">Nome Completo</label>
-                            <input type="text" name="nome" id="nome" class="form-control"
-                                placeholder="Seu nome completo" minlength="15" maxlength="80" required>
+                            <input type="text" name="nome" id="nome" class="form-control" placeholder="Seu nome completo" minlength="15" maxlength="80" required>
                             <div class="invalid-feedback">Nome deve ter entre 15 e 80 caracteres, só letras.</div>
                         </div>
 
                         <div class="row">
-                            <!-- Data Nascimento -->
                             <div class="col-md-6 mb-3">
                                 <label for="dataNascimento" class="form-label">Data de Nascimento</label>
                                 <input type="date" name="data_nascimento" id="dataNascimento" class="form-control" required>
                                 <div class="invalid-feedback">Informe uma data válida.</div>
                             </div>
-
-                            <!--Sexo -->
                             <div class="col-md-6 mb-3">
                                 <label for="sexo" class="form-label">Sexo</label>
                                 <select name="sexo" id="sexo" class="form-select" required>
@@ -50,47 +50,34 @@
                             </div>
                         </div>
 
-                        <!-- Nome materno -->
                         <div class="mb-3">
                             <label for="nomeMaterno" class="form-label">Nome Materno</label>
-                            <input type="text" name="nome_materno" id="nomeMaterno" class="form-control"
-                                placeholder="Nome completo da sua mãe" required>
+                            <input type="text" name="nome_materno" id="nomeMaterno" class="form-control" placeholder="Nome completo da sua mãe" required>
                             <div class="invalid-feedback">Campo obrigatório.</div>
                         </div>
 
                         <div class="row">
-                            <!-- CPF -->
                             <div class="col-md-6 mb-3">
                                 <label for="cpf" class="form-label">CPF</label>
-                                <input type="text" name="cpf" id="cpf" class="form-control"
-                                    placeholder="000.000.000-00" maxlength="14" required
-                                    inputmode="numeric" pattern="[0-9.\-]*">
+                                <input type="text" name="cpf" id="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required inputmode="numeric" pattern="[0-9.\-]*">
                                 <div class="invalid-feedback">CPF inválido.</div>
                             </div>
-
-                            <!-- E-mail -->
                             <div class="col-md-6 mb-3">
                                 <label for="email" class="form-label">E-mail</label>
-                                <input type="email" name="email" id="email" class="form-control"
-                                    placeholder="seuemail@exemplo.com" required>
+                                <input type="email" name="email" id="email" class="form-control" placeholder="seuemail@exemplo.com" required>
                                 <div class="invalid-feedback">Informe um e-mail válido.</div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <!-- Telefone celular -->
                             <div class="col-md-6 mb-3">
                                 <label for="telefoneCelular" class="form-label">Telefone Celular</label>
-                                <input type="text" name="telefone_celular" id="telefoneCelular" class="form-control"
-                                    placeholder="(+55)XX XXXXX-XXXX" required>
+                                <input type="text" name="telefone_celular" id="telefoneCelular" class="form-control" placeholder="(+55)XX XXXXX-XXXX" required>
                                 <div class="invalid-feedback">Preencha o telefone completo.</div>
                             </div>
-
-                            <!-- Telefone fixo -->
                             <div class="col-md-6 mb-3">
                                 <label for="telefoneFixo" class="form-label">Telefone Fixo</label>
-                                <input type="text" name="telefone_fixo" id="telefoneFixo" class="form-control"
-                                    placeholder="(+55)XX XXXXX-XXXX" required>
+                                <input type="text" name="telefone_fixo" id="telefoneFixo" class="form-control" placeholder="(+55)XX XXXXX-XXXX" required>
                                 <div class="invalid-feedback">Preencha o telefone completo.</div>
                             </div>
                         </div>
@@ -99,19 +86,14 @@
                         <h6 class="fw-bold text-muted mb-3">Endereço</h6>
 
                         <div class="row">
-                            <!-- CEP -->
                             <div class="col-md-4 mb-3">
                                 <label for="cep" class="form-label">CEP</label>
-                                <input type="text" name="cep" id="cep" class="form-control"
-                                    placeholder="00000-000" maxlength="9" required>
+                                <input type="text" name="cep" id="cep" class="form-control" placeholder="00000-000" maxlength="9" required>
                                 <div class="form-text" id="statusCep"></div>
                             </div>
-
-                            <!-- Endereço (rua) -->
                             <div class="col-md-8 mb-3">
                                 <label for="endereco" class="form-label">Endereço</label>
-                                <input type="text" name="endereco" id="endereco" class="form-control"
-                                    placeholder="Rua Exemplo" required readonly>
+                                <input type="text" name="endereco" id="endereco" class="form-control" placeholder="Rua Exemplo" required readonly>
                             </div>
                         </div>
 
@@ -146,16 +128,14 @@
 
                         <div class="mb-3">
                             <label for="login" class="form-label">Login</label>
-                            <input type="text" name="login" id="login" class="form-control"
-                                placeholder="Escolha um nome de usuário" minlength="3" maxlength="30" required>
+                            <input type="text" name="login" id="login" class="form-control" placeholder="Escolha um nome de usuário" minlength="3" maxlength="30" required>
                             <div class="invalid-feedback">Login deve ter entre 3 e 30 caracteres.</div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="senha" class="form-label">Senha</label>
-                                <input type="password" name="senha" id="senha" class="form-control"
-                                    placeholder="Digite sua senha" required>
+                                <input type="password" name="senha" id="senha" class="form-control" placeholder="Digite sua senha" required>
                                 <ul class="list-unstyled small mt-2 mb-0" id="checklistSenha">
                                     <li id="regraTamanho" class="text-muted">○ Mínimo de 8 caracteres</li>
                                     <li id="regraMaiuscula" class="text-muted">○ Uma letra maiúscula</li>
@@ -166,8 +146,7 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="confirmaSenha" class="form-label">Confirmação da Senha</label>
-                                <input type="password" name="confirma_senha" id="confirmaSenha" class="form-control"
-                                    placeholder="Repita a senha" required>
+                                <input type="password" name="confirma_senha" id="confirmaSenha" class="form-control" placeholder="Repita a senha" required>
                                 <div class="invalid-feedback">As senhas não conferem.</div>
                             </div>
                         </div>
@@ -177,14 +156,12 @@
                             <button type="reset" id="btnLimpar" class="btn btn-outline-secondary w-100 py-2">Limpar Tela</button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Toast de feedback (substitui alert()) -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
     <div id="toastFeedback" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
@@ -196,7 +173,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-/* ---------- Toast helper (feedback sem alert()) ---------- */
 const toastEl = document.getElementById('toastFeedback');
 const toastMensagem = document.getElementById('toastMensagem');
 const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
@@ -207,7 +183,6 @@ function mostrarToast(mensagem, tipo = 'danger') {
     toast.show();
 }
 
-/* ---------- Helper: marca campo como válido ou inválido visualmente ---------- */
 function marcarCampo(input, valido) {
     if (valido) {
         input.classList.remove('is-invalid');
@@ -218,14 +193,12 @@ function marcarCampo(input, valido) {
     }
 }
 
-/* ---------- Máscara do CEP ---------- */
 document.getElementById('cep').addEventListener('input', function () {
     let v = this.value.replace(/\D/g, '').slice(0, 8);
     v = v.replace(/(\d{5})(\d)/, '$1-$2');
     this.value = v;
 });
 
-/* ---------- Integração ViaCEP ---------- */
 const inputCep = document.getElementById('cep');
 const statusCep = document.getElementById('statusCep');
 const camposEndereco = ['endereco', 'bairro', 'cidade', 'uf'].map(id => document.getElementById(id));
@@ -271,7 +244,6 @@ function ativarPreenchimentoManual() {
     document.getElementById('endereco').focus();
 }
 
-/* ---------- Validação do CPF (dígito verificador) ---------- */
 function validarCPF(cpfFormatado) {
     const cpf = cpfFormatado.replace(/\D/g, '');
     if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
@@ -291,7 +263,6 @@ function validarCPF(cpfFormatado) {
     return true;
 }
 
-/* ---------- Máscara + validação do CPF em tempo real ---------- */
 const inputCpf = document.getElementById('cpf');
 inputCpf.addEventListener('input', function () {
     let v = this.value.replace(/\D/g, '').slice(0, 11);
@@ -308,7 +279,6 @@ inputCpf.addEventListener('input', function () {
     }
 });
 
-/* ---------- Máscara + validação de Telefone em tempo real ---------- */
 function configurarMascaraTelefone(campoId) {
     const input = document.getElementById(campoId);
     if (!input) return;
@@ -353,7 +323,6 @@ function configurarMascaraTelefone(campoId) {
 configurarMascaraTelefone('telefoneCelular');
 configurarMascaraTelefone('telefoneFixo');
 
-/* ---------- Validação do Nome em tempo real ---------- */
 const inputNome = document.getElementById('nome');
 inputNome.addEventListener('input', function () {
     const regexNome = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{15,80}$/;
@@ -364,7 +333,6 @@ inputNome.addEventListener('input', function () {
     marcarCampo(this, regexNome.test(this.value.trim()));
 });
 
-/* ---------- Validação do Login em tempo real ---------- */
 const inputLogin = document.getElementById('login');
 inputLogin.addEventListener('input', function () {
     if (this.value.trim().length === 0) {
@@ -375,7 +343,6 @@ inputLogin.addEventListener('input', function () {
     marcarCampo(this, tamanhoOk);
 });
 
-/* ---------- Validação da Senha em tempo real (com checklist visual) ---------- */
 const inputSenha = document.getElementById('senha');
 const inputConfirmaSenha = document.getElementById('confirmaSenha');
 
@@ -414,7 +381,6 @@ inputSenha.addEventListener('input', function () {
         marcarCampo(this, senhaValida);
     }
 
-    // Revalida a confirmação sempre que a senha principal mudar
     if (inputConfirmaSenha.value.length > 0) {
         marcarCampo(inputConfirmaSenha, inputConfirmaSenha.value === this.value);
     }
@@ -428,15 +394,14 @@ inputConfirmaSenha.addEventListener('input', function () {
     marcarCampo(this, this.value === inputSenha.value);
 });
 
-/* ---------- Validação geral no envio (confere tudo de novo, por segurança) ---------- */
 const form = document.getElementById('formCadastro');
 
 form.addEventListener('submit', function (event) {
-    event.preventDefault(); // remover quando o back-end estiver pronto
+    event.preventDefault();
 
     const erros = [];
-
     const regexNome = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{15,80}$/;
+
     if (!regexNome.test(inputNome.value.trim())) {
         marcarCampo(inputNome, false);
         erros.push('Nome deve ter entre 15 e 80 caracteres, apenas letras.');
@@ -481,8 +446,11 @@ form.addEventListener('submit', function (event) {
         return;
     }
 
-    mostrarToast('Cadastro validado! Pronto para enviar ao back-end.', 'success');
-    // form.submit(); // ativar quando o back-end estiver pronto
+    mostrarToast('Cadastro validado! Redirecionando...', 'success');
+
+    setTimeout(() => {
+        window.location.href = 'dashboard.php';
+    }, 1500);
 });
 
 document.getElementById('btnLimpar').addEventListener('click', () => {
@@ -490,18 +458,34 @@ document.getElementById('btnLimpar').addEventListener('click', () => {
     camposEndereco.forEach(campo => campo.readOnly = true);
     statusCep.textContent = '';
 
-    // Remove as marcações visuais de todos os campos
     form.querySelectorAll('.is-valid, .is-invalid').forEach(campo => {
         campo.classList.remove('is-valid', 'is-invalid');
     });
 
-    // Reseta a checklist de senha
     Object.keys(regrasSenha).forEach(id => {
         const item = document.getElementById(id);
         item.className = 'text-muted';
         item.textContent = item.textContent.replace('✓', '○');
     });
 });
+
+const toggleBtn = document.getElementById('btnThemeToggle');
+const currentTheme = localStorage.getItem('theme') || 'dark';
+
+document.documentElement.setAttribute('data-theme', currentTheme);
+
+if (toggleBtn) {
+    toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+    
+    toggleBtn.addEventListener('click', () => {
+        let theme = document.documentElement.getAttribute('data-theme');
+        let newTheme = theme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        toggleBtn.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+    });
+}
 </script>
 </body>
 </html>

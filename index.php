@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chronic Map - Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 </head>
-<body class="bg-light d-flex align-items-center vh-100">
+<body class="d-flex align-items-center vh-100">
+
+<div class="position-absolute top-0 end-0 p-3">
+    <button id="btnThemeToggle" class="btn btn-outline-primary btn-sm">🌙 Escuro</button>
+</div>
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-4">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-4">
             <div class="card shadow border-0">
                 <div class="card-body p-4">
                     <div class="text-center mb-4">
@@ -18,8 +23,7 @@
                         <p class="text-muted">Portal de Estudos com IA</p>
                     </div>
 
-                    <!-- O backend do grupo processará este formulário -->
-                    <form action="login_processa.php" method="POST">
+                    <form action="dashboard.php" method="POST">
                         <div class="mb-3">
                             <label for="email" class="form-label">E-mail</label>
                             <input type="email" name="email" id="email" class="form-control" placeholder="email@exemplo.com" required>
@@ -43,5 +47,24 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const toggleBtn = document.getElementById('btnThemeToggle');
+const currentTheme = localStorage.getItem('theme') || 'dark';
+
+document.documentElement.setAttribute('data-theme', currentTheme);
+
+if (toggleBtn) {
+    toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+    
+    toggleBtn.addEventListener('click', () => {
+        let theme = document.documentElement.getAttribute('data-theme');
+        let newTheme = theme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        toggleBtn.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
+    });
+}
+</script>
 </body>
 </html>
