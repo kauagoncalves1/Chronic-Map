@@ -1,0 +1,76 @@
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css');
+
+/* ==========================================
+   Variáveis e Acessibilidade Base
+   ========================================== */
+:root {
+    --base-font-size: 16px;
+}
+
+html {
+    font-size: var(--base-font-size);
+    transition: font-size 0.3s ease;
+}
+
+body {
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding-top: 45px; /* Espaço para a barra de acessibilidade fixa */
+}
+
+/* ==========================================
+   Barra de Acessibilidade Fixa Superior
+   ========================================== */
+.barra-acessibilidade {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background-color: #212529;
+    color: #ffffff;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.barra-acessibilidade button {
+    background: none;
+    border: 1px solid #495057;
+    color: #ffffff;
+    margin-left: 10px;
+    padding: 2px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.barra-acessibilidade button:hover {
+    background-color: #495057;
+}
+
+/* ==========================================
+   Tema Escuro (.tema-escuro)
+   ========================================== */
+.tema-escuro body, .tema-escuro { background-color: #121212 !important; color: #e0e0e0 !important; }
+.tema-escuro .card { background-color: #1e1e1e !important; color: #e0e0e0 !important; border: 1px solid #333 !important; }
+.tema-escuro .form-control, .tema-escuro .form-select, .tema-escuro input { background-color: #2b2b2b !important; border-color: #444 !important; color: #ffffff !important; }
+.tema-escuro .form-control:focus, .tema-escuro .form-select:focus { background-color: #333 !important; border-color: #0d6efd !important; }
+.tema-escuro .form-control[readonly] { background-color: #222 !important; color: #888 !important; }
+
+/* Ajuste dos Placeholders no Modo Escuro */
+.tema-escuro .form-control::placeholder, .tema-escuro .form-select::placeholder {
+    color: #a0a0a0 !important;
+    opacity: 1 !important;
+}
+
+/* Textos e Bordas no modo escuro */
+.tema-escuro h3, .tema-escuro h5, .tema-escuro h6, .tema-escuro p, .tema-escuro label, .tema-escuro .form-label, .tema-escuro small, .tema-escuro li { color: #e0e0e0 !important; }
+.tema-escuro .text-primary { color: #6ea8fe !important; }
+.tema-escuro .text-muted { color: #aaa !important; }
+.tema-escuro hr, .tema-escuro .border-bottom, .tema-escuro .border-top { border-color: #444 !important; }
+.tema-escuro .navbar { background-color: #1a1d20 !important; }
