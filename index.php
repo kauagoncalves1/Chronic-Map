@@ -65,6 +65,12 @@ if (toggleBtn) {
         toggleBtn.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
     });
 }
+
+// Captura o login/e-mail antes de enviar o formulário
+document.querySelector('form').addEventListener('submit', function() {
+    const emailInput = document.getElementById('email').value.split('@')[0];
+    localStorage.setItem('usuario_nome', emailInput || 'Estudante');
+});
 </script>
 </body>
 </html>

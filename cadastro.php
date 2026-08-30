@@ -445,7 +445,9 @@ form.addEventListener('submit', function (event) {
         mostrarToast(erros[0] || 'Verifique os campos destacados em vermelho.', 'danger');
         return;
     }
-
+    const loginUsuario = document.getElementById('login').value.trim();
+    localStorage.setItem('usuario_nome', loginUsuario || 'Estudante');
+    
     mostrarToast('Cadastro validado! Redirecionando...', 'success');
 
     setTimeout(() => {
