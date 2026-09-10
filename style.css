@@ -1,0 +1,441 @@
+/* ==========================================
+   Base
+   ========================================== */
+html {
+    font-size: 16px;
+    background-color: #f8f9fa;
+    transition: font-size 0.3s ease;
+}
+
+html.tema-escuro {
+    background-color: #121212;
+}
+
+body {
+    background-color: #f8f9fa;
+    padding-top: 70px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ==========================================
+   Tema Escuro
+   ========================================== */
+.tema-escuro,
+.tema-escuro body {
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
+}
+
+.tema-escuro .card {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #333 !important;
+}
+
+.tema-escuro .form-control,
+.tema-escuro .form-select {
+    background-color: #2b2b2b !important;
+    border-color: #444 !important;
+    color: #ffffff !important;
+}
+
+.tema-escuro .form-control:focus,
+.tema-escuro .form-select:focus {
+    background-color: #333 !important;
+    border-color: #0d6efd !important;
+}
+
+.tema-escuro .form-control[readonly] {
+    background-color: #222 !important;
+    color: #888 !important;
+}
+
+.tema-escuro .form-control::placeholder,
+.tema-escuro .form-select::placeholder {
+    color: #a0a0a0 !important;
+    opacity: 1 !important;
+}
+
+.tema-escuro h2,
+.tema-escuro h3,
+.tema-escuro h5,
+.tema-escuro h6,
+.tema-escuro p,
+.tema-escuro label,
+.tema-escuro .form-label,
+.tema-escuro small,
+.tema-escuro li {
+    color: #e0e0e0 !important;
+}
+
+.tema-escuro .text-primary {
+    color: #6ea8fe !important;
+}
+
+.tema-escuro .text-muted {
+    color: #aaa !important;
+}
+
+.tema-escuro hr {
+    border-color: #444 !important;
+}
+
+.tema-escuro .navbar-universal {
+    background-color: #1a1a2e !important;
+}
+
+
+/* ==========================================
+   Header / Navbar Universal
+   ========================================== */
+.navbar-universal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1040;
+    background-color: #0d6efd;
+    padding: 0.75rem 0;
+    transition: background-color 0.3s ease;
+}
+
+.navbar-universal .navbar-brand {
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.navbar-universal .nav-link-header {
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.navbar-universal .nav-link-header:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff !important;
+}
+
+.navbar-universal .nav-link-header.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff !important;
+}
+
+/* ==========================================
+   Botão de Acessibilidade
+   ========================================== */
+#btnAcessibilidade {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background-color 0.2s ease;
+}
+
+#btnAcessibilidade:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* ==========================================
+   Dropdown de Acessibilidade
+   ========================================== */
+#menuAcessibilidade {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 0.75rem;
+    min-width: 220px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    z-index: 1050;
+}
+
+#menuAcessibilidade.aberto {
+    display: block;
+}
+
+.tema-escuro #menuAcessibilidade {
+    background-color: #1e1e1e;
+    border-color: #3a3a3a;
+}
+
+#menuAcessibilidade .acesso-titulo {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.tema-escuro #menuAcessibilidade .acesso-titulo {
+    color: #aaa;
+}
+
+#menuAcessibilidade .acesso-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.9rem;
+    color: #212529;
+}
+
+.tema-escuro #menuAcessibilidade .acesso-item {
+    color: #e0e0e0;
+    border-color: #333;
+}
+
+#menuAcessibilidade .acesso-item:last-child {
+    border-bottom: none;
+}
+
+#menuAcessibilidade .acesso-controles {
+    display: flex;
+    gap: 0.35rem;
+}
+
+#menuAcessibilidade .acesso-controles button {
+    border: 1px solid #dee2e6;
+    background: #f8f9fa;
+    color: #212529;
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.tema-escuro #menuAcessibilidade .acesso-controles button {
+    background: #2b2b2b;
+    border-color: #444;
+    color: #e0e0e0;
+}
+
+#menuAcessibilidade .acesso-controles button:hover {
+    background: #e9ecef;
+}
+
+.tema-escuro #menuAcessibilidade .acesso-controles button:hover {
+    background: #3a3a3a;
+}
+
+.toggle-tema {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    color: #212529;
+    font-size: 0.9rem;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+}
+
+.tema-escuro .toggle-tema {
+    color: #e0e0e0;
+}
+
+.toggle-tema:hover {
+    opacity: 0.8;
+}
+
+/* ==========================================
+   Menu Mobile
+   ========================================== */
+#navLinks {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    #navLinks {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        margin-top: 0.75rem;
+        gap: 0.1rem;
+    }
+
+    #navLinks.aberto {
+        display: flex;
+    }
+
+    .navbar-universal .container {
+        flex-wrap: wrap;
+    }
+}
+/* ==========================================
+   Navbar — centralização dos links
+   ========================================== */
+.nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* ==========================================
+   Botão de Login (destaque)
+   ========================================== */
+.btn-login {
+    background-color: #ffffff;
+    color: #0d6efd !important;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-login:hover {
+    background-color: #e8f0fe;
+    transform: scale(1.02);
+}
+
+.tema-escuro .btn-login {
+    background-color: #3a3a5c;
+    color: #a0c4ff !important;
+}
+
+/* ==========================================
+   Botão de perfil do estudante
+   ========================================== */
+.btn-perfil {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-perfil:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.btn-perfil .bi-person-circle {
+    font-size: 1.3rem;
+}
+
+/* ==========================================
+   Dropdown do perfil
+   ========================================== */
+.perfil-dropdown {
+    min-width: 220px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 0;
+}
+
+.tema-escuro .perfil-dropdown {
+    background-color: #1e1e1e;
+    border-color: #3a3a3a;
+}
+
+.dropdown-header-perfil {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+}
+
+.perfil-avatar {
+    font-size: 2rem;
+    color: #0d6efd;
+    line-height: 1;
+}
+
+.tema-escuro .dropdown-header-perfil strong,
+.tema-escuro .dropdown-header-perfil small {
+    color: #e0e0e0 !important;
+}
+
+.tema-escuro .perfil-dropdown .dropdown-item {
+    color: #e0e0e0;
+}
+
+.tema-escuro .perfil-dropdown .dropdown-item:hover {
+    background-color: #2b2b2b;
+}
+
+.tema-escuro .perfil-dropdown .dropdown-divider {
+    border-color: #3a3a3a;
+}
+
+/* ==========================================
+   Botão hamburguer mobile
+   ========================================== */
+.btn-mobile-menu {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+}
+
+/* ==========================================
+   Mobile — nav links colapsáveis
+   ========================================== */
+@media (max-width: 768px) {
+    .nav-center {
+        position: static;
+        transform: none;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        margin-top: 0.75rem;
+        gap: 0.1rem;
+    }
+
+    .nav-center.aberto {
+        display: flex;
+    }
+
+    .navbar-universal .container-fluid {
+        flex-wrap: wrap;
+    }
+}
