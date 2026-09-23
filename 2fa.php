@@ -8,23 +8,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="style.css?v=2">
     <script>
-    /* Aplica tema e fonte antes do primeiro paint — evita flash branco */
-    (function() {
-        var tema = localStorage.getItem('tema');
-        if (tema === 'dark') document.documentElement.classList.add('tema-escuro');
-        var fonte = localStorage.getItem('tamanhoFonte');
-        if (fonte) document.documentElement.style.fontSize = fonte + 'px';
-    })();
-</script>
+        (function() {
+            var tema = localStorage.getItem('tema');
+            if (tema === 'dark') document.documentElement.classList.add('tema-escuro');
+            var fonte = localStorage.getItem('tamanhoFonte');
+            if (fonte) document.documentElement.style.fontSize = fonte + 'px';
+        })();
+    </script>
 </head>
-<body class="d-flex align-items-center vh-100">
+<body class="pt-5">
 
-<!-- Botão de tema flutuante (página sem menu) -->
-<button id="botaoTema" title="Alternar modo claro/escuro" aria-label="Alternar tema">
-    <i class="bi bi-moon-fill" id="iconeTema"></i>
-</button>
+<?php include 'menu.php'; ?>
 
-<div class="container">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
             <div class="card shadow border-0">
@@ -38,9 +34,9 @@
 
                     <!--
                         INTEGRAÇÃO COM O BACK-END:
-                        - A pergunta deve ser sorteada pelo PHP e vir da sessão ($_SESSION['pergunta_2fa'])
+                        - A pergunta deve ser sorteada pelo PHP via $_SESSION['pergunta_2fa']
                         - O action deve apontar para 2fa_processa.php
-                        - Controle de tentativas deve ser feito na sessão PHP (não no JS)
+                        - Controle de tentativas deve viver na sessão PHP
                     -->
                     <form id="form2fa" action="2fa_processa.php" method="POST">
                         <input type="hidden" name="pergunta_id" id="perguntaId" value="">
@@ -61,14 +57,14 @@
                         </button>
                     </form>
 
-                    <div class="text-center">
+                    <div class="text-center mb-3">
                         <small class="text-muted">
                             Tentativa <span id="tentativaAtual">1</span> de 3
                         </small>
                     </div>
 
-                    <div class="text-center mt-3">
-                        <a href="index.php" class="text-decoration-none small">
+                    <div class="text-center">
+                        <a href="login.php" class="text-decoration-none small">
                             <i class="bi bi-arrow-left"></i> Voltar para o Login
                         </a>
                     </div>
@@ -92,11 +88,15 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="acessibilidade.js"></script>
 <script>
-const PERGUNTAS = [
-    { id: 'mae', texto: 'Qual o nome da sua mãe?' },
-    { id: 'nascimento', texto: 'Qual a data do seu nascimento? (DD/MM/AAAA)' },
-    { id: 'cep', texto: 'Qual o CEP do seu endereço?' }
-];
+const toastEl = document.getElementById('toastFeedback');
+const toastMensagem = document.getElementById('toastMensagem');
+const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+
+function mostrarToast(mensagem, tipo = 'danger') {
+    toastEl.className = `toast align-items-center text-white bg-${tipo} border-0`;
+    toastMensagem.textContent = mensagem;
+    toast.show();
+}
 
 const MAX_TENTATIVAS = 3;
 const CHAVE_TENTATIVAS = 'tentativas_2fa';
@@ -106,17 +106,29 @@ const perguntaIdInput = document.getElementById('perguntaId');
 const tentativaAtualEl = document.getElementById('tentativaAtual');
 const form2fa = document.getElementById('form2fa');
 
-const toastEl = document.getElementById('toastFeedback');
-const toastMensagem = document.getElementById('toastMensagem');
-const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+// Busca dados do usuário salvos pelo login
+const usuario = JSON.parse(sessionStorage.getItem('usuario_2fa') || '{}');
 
-function mostrarToast(mensagem, tipo = 'danger') {
-    toastEl.className = `toast align-items-center text-white bg-${tipo} border-0`;
-    toastMensagem.textContent = mensagem;
-    toast.show();
-}
+// Perguntas disponíveis com suas respectivas respostas esperadas
+const PERGUNTAS = [
+    {
+        id: 'mae',
+        texto: 'Qual o nome da sua mãe?',
+        resposta: (u) => (u.nomeMaterno || '').toLowerCase().trim()
+    },
+    {
+        id: 'nascimento',
+        texto: 'Qual a data do seu nascimento? (DD/MM/AAAA)',
+        resposta: (u) => (u.dataNascimento || '').trim()
+    },
+    {
+        id: 'cep',
+        texto: 'Qual o CEP do seu endereço?',
+        resposta: (u) => (u.cep || '').replace(/\D/g, '')
+    }
+];
 
-// Simulação: no fluxo real, a pergunta vem do PHP via sessão
+// Sorteia uma pergunta aleatória
 const escolhida = PERGUNTAS[Math.floor(Math.random() * PERGUNTAS.length)];
 perguntaTexto.textContent = escolhida.texto;
 perguntaIdInput.value = escolhida.id;
@@ -130,16 +142,33 @@ tentativaAtualEl.textContent = getTentativas() + 1;
 form2fa.addEventListener('submit', function (event) {
     event.preventDefault(); // remover quando back-end estiver pronto
 
-    const resposta = document.getElementById('resposta').value.trim();
-    if (!resposta) return;
+    const respostaDigitada = document.getElementById('resposta').value.trim().toLowerCase();
+    if (!respostaDigitada) return;
+
+    const respostaEsperada = escolhida.resposta(usuario);
+
+    // Normaliza CEP pra comparação (só números)
+    const respostaNormalizada = escolhida.id === 'cep'
+        ? respostaDigitada.replace(/\D/g, '')
+        : respostaDigitada;
 
     let tentativas = getTentativas() + 1;
     sessionStorage.setItem(CHAVE_TENTATIVAS, tentativas);
 
+    if (respostaNormalizada === respostaEsperada) {
+        // Resposta correta
+        sessionStorage.removeItem(CHAVE_TENTATIVAS);
+        sessionStorage.removeItem('usuario_2fa');
+        mostrarToast('Identidade confirmada! Entrando...', 'success');
+        setTimeout(() => { window.location.href = 'dashboard.php'; }, 1500);
+        return;
+    }
+
     if (tentativas >= MAX_TENTATIVAS) {
         mostrarToast('3 tentativas sem sucesso! Favor realizar Login novamente.', 'danger');
         sessionStorage.removeItem(CHAVE_TENTATIVAS);
-        setTimeout(() => { window.location.href = 'index.php'; }, 2500);
+        sessionStorage.removeItem('usuario_2fa');
+        setTimeout(() => { window.location.href = 'login.php'; }, 2500);
         return;
     }
 

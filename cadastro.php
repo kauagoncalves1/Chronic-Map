@@ -487,8 +487,25 @@ form.addEventListener('submit', function (event) {
         return;
     }
 
-    mostrarToast('Cadastro validado! Redirecionando...', 'success');
-    // form.submit(); // ativar quando o back-end estiver pronto
+   /*
+    INTEGRAÇÃO COM O BACK-END:
+    - Remover o bloco abaixo e descomentar form.submit()
+    - O PHP deve salvar os dados no banco e redirecionar para login.php
+*/
+
+// Simulação: salva dados no localStorage pra o login/2FA usar
+const dadosCadastro = {
+    email: document.getElementById('email').value.trim(),
+    senha: document.getElementById('senha').value,
+    nomeMaterno: document.getElementById('nomeMaterno').value.trim(),
+    dataNascimento: document.getElementById('dataNascimento').value,
+    cep: document.getElementById('cep').value.trim()
+};
+localStorage.setItem('dadosCadastro', JSON.stringify(dadosCadastro));
+
+mostrarToast('Cadastro realizado! Redirecionando para o login...', 'success');
+setTimeout(() => { window.location.href = 'login.php'; }, 1500);
+// form.submit(); // ativar quando o back-end estiver pronto
 });
 
 /* ---------- Botão Limpar ---------- */
