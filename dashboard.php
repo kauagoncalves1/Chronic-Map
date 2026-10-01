@@ -5,56 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chronic Map - Painel Principal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css?v=2">
+    <script>
+    /* Aplica tema e fonte antes do primeiro paint — evita flash branco */
+    (function() {
+        var tema = localStorage.getItem('tema');
+        if (tema === 'dark') document.documentElement.classList.add('tema-escuro');
+        var fonte = localStorage.getItem('tamanhoFonte');
+        if (fonte) document.documentElement.style.fontSize = fonte + 'px';
+    })();
+</script>
 </head>
-<body>
+<body class="pt-5">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="dashboard.php">Chronic Map</a>
-        <div class="d-flex align-items-center">
-            <span class="navbar-text text-white me-3">Bem-vindo, Aluno!</span>
-            <button id="btnThemeToggle" class="btn btn-outline-light btn-sm me-2">🌙 Escuro</button>
-            <a href="index.php" class="btn btn-outline-light btn-sm">Sair</a>
-        </div>
-    </div>
-</nav>
+<?php include 'menu.php'; ?>
 
 <div class="container py-5">
     <div class="row mb-4">
-        <div class="col">
-            <h2 class="fw-bold">Painel de Estudos</h2>
-            <p class="text-muted">Selecione uma das opções abaixo para evoluir suas habilidades.</p>
+        <div class="col-12">
+            <h2 class="fw-bold text-primary">Produtos de Aprendizado IA</h2>
+            <p class="text-muted">Explore as nossas ferramentas de progressão de carreira baseadas em Inteligência Artificial.</p>
         </div>
     </div>
 
     <div class="row g-4">
         <div class="col-md-4">
             <div class="card h-100 shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold text-primary">Tutor de IA</h5>
-                    <p class="card-text">Converse em tempo real com nossa Inteligência Artificial para tirar dúvidas e criar resumos.</p>
-                    <a href="chat.php" class="btn btn-primary w-100 mt-2">Acessar Tutor IA</a>
+                <div class="card-body text-center">
+                    <div class="mb-3 text-primary" style="font-size: 2.5rem;">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Tutor de IA Avançado</h5>
+                    <p class="card-text text-muted">Acompanhamento em tempo real para tirar dúvidas e consolidar conhecimentos com base no seu diagnóstico inicial.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-3 text-center">
+                    <a href="chat.php" class="btn btn-primary w-75">
+                        <i class="bi bi-box-arrow-in-right"></i> Acessar
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="card h-100 shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold text-primary">Mapas Mentais</h5>
-                    <p class="card-text">Explore os cronogramas e estruturas visuais do seu plano de aprendizado.</p>
-                    <a href="#" class="btn btn-outline-primary w-100 mt-2">Ver Mapas</a>
+                <div class="card-body text-center">
+                    <div class="mb-3 text-primary" style="font-size: 2.5rem;">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Mapas Mentais</h5>
+                    <p class="card-text text-muted">Explore os cronogramas e estruturas visuais do seu plano de aprendizado.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-3 text-center">
+                    <a href="mapas.php" class="btn btn-outline-primary w-75">
+                        <i class="bi bi-box-arrow-in-right"></i> Ver Mapas
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="card h-100 shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold text-primary">Atividades e Progresso</h5>
-                    <p class="card-text">Acompanhe suas matérias, entregas e evolução no portal.</p>
-                    <a href="#" class="btn btn-outline-primary w-100 mt-2">Ver Progresso</a>
+                <div class="card-body text-center">
+                    <div class="mb-3 text-primary" style="font-size: 2.5rem;">
+                        <i class="bi bi-bar-chart"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Atividades e Progresso</h5>
+                    <p class="card-text text-muted">Acompanhe suas matérias, entregas e evolução no portal.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-3 text-center">
+                    <a href="progresso.php" class="btn btn-outline-primary w-75">
+                        <i class="bi bi-box-arrow-in-right"></i> Ver Progresso
+                    </a>
                 </div>
             </div>
         </div>
@@ -62,24 +84,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-const toggleBtn = document.getElementById('btnThemeToggle');
-const currentTheme = localStorage.getItem('theme') || 'dark';
-
-document.documentElement.setAttribute('data-theme', currentTheme);
-
-if (toggleBtn) {
-    toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-    
-    toggleBtn.addEventListener('click', () => {
-        let theme = document.documentElement.getAttribute('data-theme');
-        let newTheme = theme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        toggleBtn.textContent = newTheme === 'dark' ? '☀️ Claro' : '🌙 Escuro';
-    });
-}
-</script>
+<script src="acessibilidade.js"></script>
 </body>
 </html>
