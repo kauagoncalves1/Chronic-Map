@@ -6,7 +6,7 @@
     <title>Chronic Map - Cadastro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=6">
     <script>
     /* Aplica tema e fonte antes do primeiro paint — evita flash branco */
     (function() {
@@ -439,7 +439,7 @@ inputConfirmaSenha.addEventListener('input', function () {
 const form = document.getElementById('formCadastro');
 
 form.addEventListener('submit', function (event) {
-    event.preventDefault(); // remover quando o back-end estiver pronto
+    event.preventDefault();
 
     const erros = [];
 
@@ -493,7 +493,6 @@ form.addEventListener('submit', function (event) {
     - O PHP deve salvar os dados no banco e redirecionar para login.php
 */
 
-// Simulação: salva dados no localStorage pra o login/2FA usar
 const dadosCadastro = {
     email: document.getElementById('email').value.trim(),
     senha: document.getElementById('senha').value,
@@ -505,7 +504,6 @@ localStorage.setItem('dadosCadastro', JSON.stringify(dadosCadastro));
 
 mostrarToast('Cadastro realizado! Redirecionando para o login...', 'success');
 setTimeout(() => { window.location.href = 'login.php'; }, 1500);
-// form.submit(); // ativar quando o back-end estiver pronto
 });
 
 /* ---------- Botão Limpar ---------- */

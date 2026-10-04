@@ -6,9 +6,8 @@
     <title>Chronic Map - Painel Principal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=6">
     <script>
-    /* Aplica tema e fonte antes do primeiro paint — evita flash branco */
     (function() {
         var tema = localStorage.getItem('tema');
         if (tema === 'dark') document.documentElement.classList.add('tema-escuro');

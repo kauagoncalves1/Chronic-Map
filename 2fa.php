@@ -6,7 +6,7 @@
     <title>Chronic Map - Verificação de Segurança</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=6">
     <script>
         (function() {
             var tema = localStorage.getItem('tema');
@@ -32,12 +32,6 @@
                         <p class="text-muted">Confirme sua identidade para continuar.</p>
                     </div>
 
-                    <!--
-                        INTEGRAÇÃO COM O BACK-END:
-                        - A pergunta deve ser sorteada pelo PHP via $_SESSION['pergunta_2fa']
-                        - O action deve apontar para 2fa_processa.php
-                        - Controle de tentativas deve viver na sessão PHP
-                    -->
                     <form id="form2fa" action="2fa_processa.php" method="POST">
                         <input type="hidden" name="pergunta_id" id="perguntaId" value="">
 
@@ -106,10 +100,8 @@ const perguntaIdInput = document.getElementById('perguntaId');
 const tentativaAtualEl = document.getElementById('tentativaAtual');
 const form2fa = document.getElementById('form2fa');
 
-// Busca dados do usuário salvos pelo login
 const usuario = JSON.parse(sessionStorage.getItem('usuario_2fa') || '{}');
 
-// Perguntas disponíveis com suas respectivas respostas esperadas
 const PERGUNTAS = [
     {
         id: 'mae',
@@ -128,7 +120,6 @@ const PERGUNTAS = [
     }
 ];
 
-// Sorteia uma pergunta aleatória
 const escolhida = PERGUNTAS[Math.floor(Math.random() * PERGUNTAS.length)];
 perguntaTexto.textContent = escolhida.texto;
 perguntaIdInput.value = escolhida.id;
@@ -140,14 +131,13 @@ function getTentativas() {
 tentativaAtualEl.textContent = getTentativas() + 1;
 
 form2fa.addEventListener('submit', function (event) {
-    event.preventDefault(); // remover quando back-end estiver pronto
+    event.preventDefault();
 
     const respostaDigitada = document.getElementById('resposta').value.trim().toLowerCase();
     if (!respostaDigitada) return;
 
     const respostaEsperada = escolhida.resposta(usuario);
 
-    // Normaliza CEP pra comparação (só números)
     const respostaNormalizada = escolhida.id === 'cep'
         ? respostaDigitada.replace(/\D/g, '')
         : respostaDigitada;
@@ -156,7 +146,6 @@ form2fa.addEventListener('submit', function (event) {
     sessionStorage.setItem(CHAVE_TENTATIVAS, tentativas);
 
     if (respostaNormalizada === respostaEsperada) {
-        // Resposta correta
         sessionStorage.removeItem(CHAVE_TENTATIVAS);
         sessionStorage.removeItem('usuario_2fa');
         mostrarToast('Identidade confirmada! Entrando...', 'success');

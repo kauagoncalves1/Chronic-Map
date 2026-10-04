@@ -6,14 +6,15 @@
     <title>Chronic Map - Tutor IA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=5">
     <style>
         .chat-box { height: 480px; overflow-y: auto; }
         .message-ai { max-width: 80%; border-radius: 15px 15px 15px 0; }
         .message-user { max-width: 80%; border-radius: 15px 15px 0 15px; }
+        .tema-escuro .message-ai { background-color: #1a1a1a !important; color: #f5f5f5 !important; border-color: #333 !important; }
+        .tema-escuro .chat-box { background-color: #121212 !important; }
     </style>
     <script>
-    /* Aplica tema e fonte antes do primeiro paint — evita flash branco */
     (function() {
         var tema = localStorage.getItem('tema');
         if (tema === 'dark') document.documentElement.classList.add('tema-escuro');
@@ -65,11 +66,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="acessibilidade.js"></script>
 <script>
-/*
-    INTEGRAÇÃO COM O BACK-END:
-    - Substituir o setTimeout abaixo por uma chamada fetch() ao endpoint da API FastAPI
-    - A resposta real virá da Gemini API, processada pelo back-end PHP/FastAPI
-*/
 const chatContainer = document.getElementById('chatContainer');
 const chatForm = document.getElementById('chatForm');
 const inputMensagem = document.getElementById('inputMensagem');

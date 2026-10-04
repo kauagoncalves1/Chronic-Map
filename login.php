@@ -6,7 +6,7 @@
     <title>Chronic Map - Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=6">
     <script>
         (function() {
             var tema = localStorage.getItem('tema');
@@ -112,7 +112,7 @@ document.getElementById('toggleSenha').addEventListener('click', function () {
 const formLogin = document.getElementById('formLogin');
 
 formLogin.addEventListener('submit', function (event) {
-    event.preventDefault(); // remover quando o back-end estiver pronto
+    event.preventDefault();
 
     const email = document.getElementById('email').value.trim();
     const senha = document.getElementById('senha').value;
@@ -122,19 +122,9 @@ formLogin.addEventListener('submit', function (event) {
         return;
     }
 
-    /*
-        INTEGRAÇÃO COM O BACK-END:
-        - Remover o bloco de simulação abaixo
-        - Deixar o form submeter normalmente para login_processa.php
-        - O PHP deve validar e-mail/senha no banco, iniciar sessão e redirecionar para 2fa.php
-        - O PHP deve salvar na sessão os dados necessários pro 2FA (nome da mãe, data de nascimento, CEP)
-    */
-
-    // Simulação: busca dados salvos no cadastro via localStorage
     const dadosCadastro = JSON.parse(localStorage.getItem('dadosCadastro') || '{}');
 
     if (dadosCadastro.email && dadosCadastro.email === email && dadosCadastro.senha === senha) {
-        // Salva na sessionStorage pra o 2FA usar
         sessionStorage.setItem('usuario_2fa', JSON.stringify({
             email: dadosCadastro.email,
             nomeMaterno: dadosCadastro.nomeMaterno,
