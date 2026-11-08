@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/sora";
 import "./globals.css";
+import { Providers } from "@/components/Providers";
+import { Navbar } from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: { default: "Chronic Map", template: "%s | Chronic Map" },
@@ -33,7 +35,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Pular para o conteudo
         </a>
-        <main id="conteudo">{children}</main>
+        <Providers>
+          <Navbar />
+          <main id="conteudo">{children}</main>
+        </Providers>
       </body>
     </html>
   );
