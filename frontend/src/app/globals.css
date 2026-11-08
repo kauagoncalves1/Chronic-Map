@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+/*
+ * DESIGN TOKENS - Chronic Map
+ * Origem: azul da logo CHRNC = #02329F (amostrado da imagem).
+ * Decisoes:
+ *  - brand-700 e o azul exato da logo; os demais passos mantem o mesmo matiz.
+ *  - neutros "ink" tem matiz azulado: nunca preto/branco puros.
+ *  - espacamento em escala 4/8pt (usar utilitarios do Tailwind: 1=4px, 2=8px...).
+ */
+@theme static {
+  --color-brand-50: #eef3ff;
+  --color-brand-100: #dce7ff;
+  --color-brand-200: #b9cEff;
+  --color-brand-300: #8aaeff;
+  --color-brand-400: #4f83f5;
+  --color-brand-500: #1f5be0;
+  --color-brand-600: #0a44c4;
+  --color-brand-700: #02329f;
+  --color-brand-800: #052a7d;
+  --color-brand-900: #0a1f5c;
+  --color-brand-950: #060f33;
+
+  --color-ink-50: #f5f7fc;
+  --color-ink-100: #ebeff8;
+  --color-ink-200: #d8dfee;
+  --color-ink-300: #b6c0d8;
+  --color-ink-400: #8793b3;
+  --color-ink-500: #5e6a8c;
+  --color-ink-600: #444f70;
+  --color-ink-700: #2f3957;
+  --color-ink-800: #1d2540;
+  --color-ink-900: #121830;
+  --color-ink-950: #0b0f22;
+
+  --color-glow: #3dd6f5; /* acento ciano: so foco, brilho e destaques */
+  --color-ok: #14a56b;
+  --color-warn: #d98a06;
+  --color-danger: #d6334a;
+
+  /* Papeis semanticos (mudam com o tema) */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Sora Variable", "Inter Variable", ui-sans-serif, sans-serif;
+
+  --radius-card: 20px;
+  --radius-control: 12px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  --bg: var(--color-ink-50);
+  --surface: #ffffff;           /* branco so em superficie elevada, com sombra azulada */
+  --surface-2: var(--color-ink-100);
+  --line: var(--color-ink-200);
+  --fg: var(--color-ink-900);
+  --muted: var(--color-ink-500); /* 5.0:1 sobre o bg: AA */
+  --primary: var(--color-brand-700);
+  --primary-fg: var(--color-ink-50);
+  --font-scale: 1;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: var(--color-ink-950);
+  --surface: var(--color-ink-900);
+  --surface-2: var(--color-ink-800);
+  --line: var(--color-ink-700);
+  --fg: var(--color-ink-50);
+  --muted: var(--color-ink-300);
+  --primary: var(--color-brand-400);
+  --primary-fg: var(--color-ink-950);
+  color-scheme: dark;
+}
+
+/* Alto contraste (requisito do Desafio Plus: fundo escuro/fonte clara e o inverso) */
+:root[data-contrast="high"] {
+  --bg: #000814;
+  --surface: #000814;
+  --surface-2: #00112b;
+  --line: #ffffff;
+  --fg: #ffffff;
+  --muted: #e6ecff;
+  --primary: #ffe14d;
+  --primary-fg: #000814;
+}
+
+html {
+  /* Aumentar/diminuir fonte: so mexer em --font-scale (0.875 a 1.5) */
+  font-size: calc(16px * var(--font-scale));
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-glow);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
