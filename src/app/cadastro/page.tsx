@@ -2,24 +2,29 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import { motion } from "motion/react";
 import { Eraser, Send } from "lucide-react";
 import { AuthShell } from "@/components/AuthShell";
 import { Button, Field, Select } from "@/components/ui";
 import { useToast } from "@/components/Toast";
 import { api } from "@/lib/api";
 import { saveTwoFA } from "@/lib/twofa";
+import { fadeUp } from "@/lib/motion";
 import * as v from "@/lib/validators";
 
 /**
  * Cadastro (PDF secao 5). Regras: todos os campos obrigatorios, nome 15-80 letras, CPF com digito,
  * CEP via API (ViaCEP) com preenchimento manual se falhar, telefones (+55)XX-XXXXXXXX,
- * login 6 letras, senha forte, confirmacao igual.
+ * senha com confirmacao igual. O acesso e feito com o E-MAIL (nao ha campo de login separado).
+ *
  * O back hoje so recebe nome, e-mail e senha: os demais campos sao validados aqui e NAO sao
  * enviados nem guardados (LGPD: nao coletamos o que nao temos onde proteger). 2FA guarda so hashes.
+ *
+ * Layout: campos agrupados em secoes que aparecem conforme a rolagem (a 1a ja entra visivel).
  */
 const VAZIO = {
   nome: "", nascimento: "", sexo: "", mae: "", cpf: "", email: "", celular: "", fixo: "",
-  cep: "", logradouro: "", numero: "", bairro: "", cidade: "", uf: "", login: "", senha: "", confirma: "",
+  cep: "", logradouro: "", numero: "", bairro: "", cidade: "", uf: "", senha: "", confirma: "",
 };
 type Form = typeof VAZIO;
 type Erros = Partial<Record<keyof Form, string>>;
@@ -29,16 +34,33 @@ function validar(f: Form): Erros {
   const obrig = (k: keyof Form, msg = "Campo obrigatório.") => { if (!f[k].trim()) e[k] = msg; };
   (Object.keys(VAZIO) as (keyof Form)[]).forEach((k) => obrig(k));
   if (!e.nome && !v.nomeValido(f.nome)) e.nome = "Use de 15 a 80 letras (sem números ou símbolos).";
+  if (!e.nascimento && !v.dataNascimentoValida(f.nascimento)) e.nascimento = "Data inválida.";
   if (!e.cpf && !v.cpfValido(f.cpf)) e.cpf = "CPF inválido.";
   if (!e.email && !v.emailValido(f.email)) e.email = "E-mail inválido.";
   if (!e.celular && !v.telefoneValido(f.celular)) e.celular = "Use o formato (+55)XX-XXXXXXXX.";
   if (!e.fixo && !v.telefoneValido(f.fixo)) e.fixo = "Use o formato (+55)XX-XXXXXXXX.";
   if (!e.cep && !v.cepValido(f.cep)) e.cep = "CEP inválido.";
-  if (!e.login && !v.loginValido(f.login)) e.login = "Exatamente 6 letras.";
   if (!e.senha && f.senha.length < 8) e.senha = "Mínimo de 8 caracteres.";
   if (!e.senha && f.senha.length > 72) e.senha = "Máximo de 72 caracteres.";
   if (!e.confirma && f.confirma !== f.senha) e.confirma = "As senhas não coincidem.";
   return e;
+}
+
+/** Grupo de campos que surge ao entrar na tela (fade + subida), uma unica vez. */
+function Secao({ titulo, primeira, children }: { titulo: string; primeira?: boolean; children: React.ReactNode }) {
+  return (
+    <motion.div
+      role="group"
+      aria-label={titulo}
+      variants={fadeUp}
+      initial="hidden"
+      {...(primeira ? { animate: "show" } : { whileInView: "show", viewport: { once: true, margin: "0px 0px -15% 0px" } })}
+      className="grid gap-x-3 gap-y-3 sm:grid-cols-2"
+    >
+      <h2 className="text-[0.7rem] font-semibold uppercase tracking-widest text-muted sm:col-span-2">{titulo}</h2>
+      {children}
+    </motion.div>
+  );
 }
 
 export default function CadastroPage() {
@@ -91,40 +113,46 @@ export default function CadastroPage() {
   const E = (k: keyof Form) => erros[k];
   return (
     <AuthShell title="Criar conta" subtitle="Preencha seus dados para começar." wide>
-      <form onSubmit={enviar} noValidate className="grid gap-4 sm:grid-cols-2">
-        <Field className="sm:col-span-2" label="Nome completo" value={f.nome} onChange={set("nome")} error={E("nome")} autoComplete="name" />
-        <Field label="Data de nascimento" type="date" value={f.nascimento} onChange={set("nascimento")} error={E("nascimento")} autoComplete="bday" />
-        <Select label="Sexo" value={f.sexo} onChange={set("sexo")} error={E("sexo")}>
-          <option value="">Selecione</option>
-          <option value="F">Feminino</option>
-          <option value="M">Masculino</option>
-          <option value="O">Outro</option>
-        </Select>
-        <Field label="Nome materno" value={f.mae} onChange={set("mae")} error={E("mae")} />
-        <Field label="CPF" inputMode="numeric" value={f.cpf} onChange={set("cpf", v.maskCpf)} error={E("cpf")} placeholder="000.000.000-00" />
-        <Field className="sm:col-span-2" label="E-mail" type="email" value={f.email} onChange={set("email")} error={E("email")} autoComplete="email" />
-        <Field label="Telefone celular" inputMode="tel" value={f.celular} onChange={set("celular", v.maskTelefone)} error={E("celular")} placeholder="(+55)21-999999999" />
-        <Field label="Telefone fixo" inputMode="tel" value={f.fixo} onChange={set("fixo", v.maskTelefone)} error={E("fixo")} placeholder="(+55)21-22223333" />
+      <form onSubmit={enviar} noValidate className="space-y-7">
+        <Secao titulo="Dados pessoais" primeira>
+          <Field className="sm:col-span-2" label="Nome completo" value={f.nome} onChange={set("nome")} error={E("nome")} autoComplete="name" />
+          <Field label="Data de nascimento" type="date" value={f.nascimento} onChange={set("nascimento")} error={E("nascimento")} autoComplete="bday" />
+          <Select label="Sexo" value={f.sexo} onChange={set("sexo")} error={E("sexo")}>
+            <option value="">Selecione</option>
+            <option value="F">Feminino</option>
+            <option value="M">Masculino</option>
+            <option value="O">Outro</option>
+          </Select>
+          <Field label="Nome materno" value={f.mae} onChange={set("mae")} error={E("mae")} />
+          <Field label="CPF" inputMode="numeric" value={f.cpf} onChange={set("cpf", v.maskCpf)} error={E("cpf")} placeholder="000.000.000-00" />
+        </Secao>
 
-        <Field label="CEP" inputMode="numeric" value={f.cep} onChange={set("cep", v.maskCep)} onBlur={buscaCep} error={E("cep")}
-          hint={cepBusy ? "Buscando endereço..." : undefined} placeholder="00000-000" />
-        <Field label="Logradouro" value={f.logradouro} onChange={set("logradouro")} error={E("logradouro")} />
-        <Field ref={numeroRef} label="Número" value={f.numero} onChange={set("numero")} error={E("numero")} />
-        <Field label="Bairro" value={f.bairro} onChange={set("bairro")} error={E("bairro")} />
-        <Field label="Cidade" value={f.cidade} onChange={set("cidade")} error={E("cidade")} />
-        <Field label="UF" maxLength={2} value={f.uf} onChange={set("uf", (s) => s.toUpperCase())} error={E("uf")} />
+        <Secao titulo="Contato">
+          <Field className="sm:col-span-2" label="E-mail (será o seu login)" type="email" value={f.email} onChange={set("email")} error={E("email")} autoComplete="email" />
+          <Field label="Telefone celular" inputMode="tel" value={f.celular} onChange={set("celular", v.maskTelefone)} error={E("celular")} placeholder="(+55)21-999999999" />
+          <Field label="Telefone fixo" inputMode="tel" value={f.fixo} onChange={set("fixo", v.maskTelefone)} error={E("fixo")} placeholder="(+55)21-22223333" />
+        </Secao>
 
-        <Field label="Login (6 letras)" maxLength={6} value={f.login} onChange={set("login")} error={E("login")} autoComplete="username" />
-        <span className="hidden sm:block" />
-        <Field label="Senha" type="password" value={f.senha} onChange={set("senha")} error={E("senha")} autoComplete="new-password" hint="Mínimo de 8 caracteres." />
-        <Field label="Confirmar senha" type="password" value={f.confirma} onChange={set("confirma")} error={E("confirma")} autoComplete="new-password" />
+        <Secao titulo="Endereço">
+          <Field label="CEP" inputMode="numeric" value={f.cep} onChange={set("cep", v.maskCep)} onBlur={buscaCep} error={E("cep")}
+            hint={cepBusy ? "Buscando endereço..." : undefined} placeholder="00000-000" />
+          <Field label="Logradouro" value={f.logradouro} onChange={set("logradouro")} error={E("logradouro")} />
+          <Field ref={numeroRef} label="Número" value={f.numero} onChange={set("numero")} error={E("numero")} />
+          <Field label="Bairro" value={f.bairro} onChange={set("bairro")} error={E("bairro")} />
+          <Field label="Cidade" value={f.cidade} onChange={set("cidade")} error={E("cidade")} />
+          <Field label="UF" maxLength={2} value={f.uf} onChange={set("uf", (s) => s.toUpperCase())} error={E("uf")} />
+        </Secao>
 
-        <div className="flex gap-3 pt-2 sm:col-span-2">
-          <Button type="submit" loading={loading} className="flex-1"><Send className="size-4" aria-hidden /> Enviar</Button>
-          <Button type="button" variant="ghost" className="flex-1" onClick={() => { setF(VAZIO); setErros({}); }}>
-            <Eraser className="size-4" aria-hidden /> Limpar
-          </Button>
-        </div>
+        <Secao titulo="Senha">
+          <Field label="Senha" type="password" value={f.senha} onChange={set("senha")} error={E("senha")} autoComplete="new-password" hint="Mínimo de 8 caracteres." />
+          <Field label="Confirmar senha" type="password" value={f.confirma} onChange={set("confirma")} error={E("confirma")} autoComplete="new-password" />
+          <div className="flex gap-3 pt-2 sm:col-span-2">
+            <Button type="submit" loading={loading} className="flex-1"><Send className="size-4" aria-hidden /> Enviar</Button>
+            <Button type="button" variant="ghost" className="flex-1" onClick={() => { setF(VAZIO); setErros({}); }}>
+              <Eraser className="size-4" aria-hidden /> Limpar
+            </Button>
+          </div>
+        </Secao>
       </form>
       <p className="mt-6 text-center text-sm text-muted">
         Já tem conta? <Link href="/login" className="font-medium text-primary hover:underline">Entrar</Link>

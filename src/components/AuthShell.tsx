@@ -16,7 +16,7 @@ export function AuthShell({
         variants={stagger}
         initial="hidden"
         animate="show"
-        className={`w-full rounded-[var(--radius-card)] border border-line bg-surface/90 p-6 shadow-xl shadow-brand-950/5 backdrop-blur-xl sm:p-8 ${wide ? "max-w-3xl" : "max-w-md"}`}
+        className={`w-full rounded-[var(--radius-card)] border border-line bg-surface/90 p-6 shadow-xl shadow-brand-950/5 backdrop-blur-xl sm:p-8 ${wide ? "max-w-2xl" : "max-w-md"}`}
       >
         <motion.div variants={fadeUp} className="flex items-center gap-3">
           <Logo className="h-9" />

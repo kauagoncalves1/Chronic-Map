@@ -7,7 +7,12 @@
  * abaixo seguem o README. Os marcados com [?] precisam ser conferidos em http://localhost:8000/docs.
  */
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+/**
+ * Por padrao o navegador chama "/api/..." (mesma origem) e o Next repassa para a API FastAPI
+ * (ver rewrites em next.config.ts). Assim nao depende de CORS no back. So defina
+ * NEXT_PUBLIC_API_URL se quiser apontar direto para outra URL.
+ */
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
 /* ---------------- Sessao (token JWT) ----------------
  * Guardado em sessionStorage: some ao fechar a aba. Aceitavel para o escopo da disciplina;
@@ -55,13 +60,16 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     });
   } catch {
     // RNF04: falha de rede/IA nao quebra a tela; permite tentar de novo.
-    throw new ApiError("Servidor indisponivel. Tente novamente em instantes.", 0);
+    throw new ApiError("Não foi possível falar com o servidor. Verifique sua conexão e tente novamente.", 0);
   }
   if (!res.ok) {
     const body = await res.json().catch(() => null);
+    // Proxy sem resposta da API (back desligado): o Next devolve 5xx sem corpo JSON.
+    if (res.status >= 500 && !body?.detail)
+      throw new ApiError("A API não respondeu. Confirme se o back-end está no ar (docker compose up) e tente de novo.", res.status);
     const d = body?.detail;
     // FastAPI devolve string (erro de negocio) ou lista (erro de validacao 422).
-    const msg = typeof d === "string" ? d : Array.isArray(d) ? d.map((e) => e.msg).join(" ") : "Algo deu errado.";
+    const msg = typeof d === "string" ? d : Array.isArray(d) ? d.map((e) => e.msg).join(" ") : "Algo deu errado. Tente novamente.";
     throw new ApiError(msg, res.status, body);
   }
   if (res.status === 204) return undefined as T;

@@ -15,7 +15,7 @@ type FieldProps = {
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
 const control =
-  "w-full rounded-[var(--radius-control)] border bg-surface px-4 py-3 text-base outline-none transition-colors placeholder:text-muted/70 focus:border-primary disabled:opacity-60";
+  "w-full rounded-[var(--radius-control)] border bg-surface px-3.5 py-2.5 text-[0.95rem] outline-none transition-colors placeholder:text-muted/70 focus:border-primary disabled:opacity-60";
 
 export const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
   { label, error, hint, multiline, right, className, ...props },
@@ -26,7 +26,7 @@ export const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
   const Tag = (multiline ? "textarea" : "input") as "input";
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium">
+      <label htmlFor={id} className="mb-1 block text-[0.8125rem] font-medium">
         {label}
       </label>
       <div className="relative">
@@ -56,7 +56,7 @@ export function Select({
   const id = useId();
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium">{label}</label>
+      <label htmlFor={id} className="mb-1 block text-[0.8125rem] font-medium">{label}</label>
       <select
         id={id}
         aria-invalid={!!error}

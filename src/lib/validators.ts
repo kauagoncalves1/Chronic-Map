@@ -19,9 +19,6 @@ export function cpfValido(cpf: string): boolean {
 /** Nome: 15 a 80 caracteres alfabeticos, espacos permitidos (regra 2). */
 export const nomeValido = (s: string) => /^[A-Za-zÀ-ÿ' ]{15,80}$/.test(s.trim());
 
-/** Login: exatamente 6 letras (regra 6). */
-export const loginValido = (s: string) => /^[A-Za-z]{6}$/.test(s);
-
 export const emailValido = (s: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s.trim());
 
 /** Senha: o back aceita 8 a 72 caracteres (bcrypt trunca em 72 bytes). */
