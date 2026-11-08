@@ -64,11 +64,14 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     const msg = typeof d === "string" ? d : Array.isArray(d) ? d.map((e) => e.msg).join(" ") : "Algo deu errado.";
     throw new ApiError(msg, res.status, body);
   }
+  if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
 }
 
 /* ---------------- Tipos (app/schemas.py) ---------------- */
-export type UsuarioOut = { id: number; nome: string; email: string; criado_em: string };
+/** `perfil` NAO existe no schema atual do back; fica opcional para quando o back enviar (master | comum). */
+export type UsuarioOut = { id: number; nome: string; email: string; criado_em: string; perfil?: "master" | "comum" };
+export type LogEntry = { id: number; data_hora: string; nome: string; cpf?: string; fator_2fa: string };
 export type TokenOut = { access_token: string; token_type: string; usuario: UsuarioOut };
 export type UsuarioCreate = { nome: string; email: string; senha: string };
 export type LoginIn = { email: string; senha: string };
@@ -104,6 +107,11 @@ export type DuvidaOut = {
   pergunta: string; resposta_json: Partial<RespostaAssistente>; criado_em: string;
 };
 
+export type LogOut = { id?: number; criado_em: string; nome: string; segundo_fator?: string; cpf?: string };
+
+/** Recursos pedidos pelo PDF que NAO existem no back hoje. Se o servidor responder 404/405/501, a tela mostra "indisponivel". */
+export const isUnavailable = (e: unknown) => e instanceof ApiError && [404, 405, 501].includes(e.status);
+
 const post = <T>(path: string, body: unknown) => request<T>(path, { method: "POST", body: JSON.stringify(body) });
 const patch = <T>(path: string, body: unknown) => request<T>(path, { method: "PATCH", body: JSON.stringify(body) });
 
@@ -111,6 +119,24 @@ export const api = {
   auth: {
     cadastro: (b: UsuarioCreate) => post<UsuarioOut>("/auth/cadastro", b), // [?] caminho do README
     login: (b: LoginIn) => post<TokenOut>("/auth/login", b), //               [?] caminho do README
+  },
+  /** [?] Nenhum destes existe nos schemas atuais; as telas tratam 404/405 como "indisponivel". */
+  usuarios: {
+    listar: (busca: string) => request<UsuarioOut[]>(`/usuarios?busca=${encodeURIComponent(busca)}`),
+    excluir: (id: number) => request<{ ok?: boolean }>(`/usuarios/${id}`, { method: "DELETE" }),
+  },
+  logs: {
+    listar: (tipo: "nome" | "cpf" | "todos", termo: string) =>
+      request<LogEntry[]>(`/logs?tipo=${tipo}&termo=${encodeURIComponent(termo)}`),
+  },
+  senha: (atual: string, nova: string) => patch<{ ok?: boolean }>("/auth/senha", { senha_atual: atual, senha_nova: nova }),
+  admin: {
+    usuarios: (busca: string) => request<UsuarioOut[]>(`/usuarios?busca=${encodeURIComponent(busca)}`), // [?] nao existe no back
+    excluir: (id: number) => request<void>(`/usuarios/${id}`, { method: "DELETE" }), //                  [?] nao existe no back
+    logs: (campo: string, busca: string) =>
+      request<LogOut[]>(`/logs?campo=${encodeURIComponent(campo)}&busca=${encodeURIComponent(busca)}`), // [?] nao existe no back
+    alterarSenha: (senha_atual: string, senha_nova: string) =>
+      request<void>("/auth/senha", { method: "PATCH", body: JSON.stringify({ senha_atual, senha_nova }) }), // [?] nao existe no back
   },
   areas: () => request<AreaMacro[]>("/areas"),
   subareas: (id: number) => request<AreaMicro[]>(`/areas/${id}/subareas`),
@@ -133,3 +159,6 @@ export const api = {
     historico: (usuarioId: number) => request<DuvidaOut[]>(`/assistente/historico/${usuarioId}`),
   },
 };
+
+/** Endpoint inexistente no back atual (as telas mostram aviso em vez de quebrar). */
+export const indisponivel = (e: unknown) => e instanceof ApiError && [404, 405, 501].includes(e.status);

@@ -4,6 +4,7 @@ import "@fontsource-variable/sora";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { Navbar } from "@/components/Navbar";
+import { ChatWidget } from "@/components/ChatWidget";
 
 export const metadata: Metadata = {
   title: { default: "Chronic Map", template: "%s | Chronic Map" },
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Navbar />
           <main id="conteudo">{children}</main>
+          <ChatWidget />
         </Providers>
       </body>
     </html>
