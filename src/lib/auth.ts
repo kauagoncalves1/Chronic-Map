@@ -6,6 +6,7 @@
  */
 import { useSyncExternalStore } from "react";
 import { session, type TokenOut, type UsuarioOut } from "./api";
+import { PREVIEW, PREVIEW_TOKEN } from "./preview";
 
 const EVT = "cm-session";
 const PEND = "cm-pending";
@@ -65,3 +66,9 @@ export function useSession(): { user: UsuarioOut | null; ready: boolean } {
 }
 
 export const isMaster = (u: UsuarioOut | null) => u?.perfil === "master";
+
+/** Pre-visualizacao: ja nasce logado (master) e com trilha ativa, para abrir todas as telas. */
+if (PREVIEW && typeof window !== "undefined" && !session.token()) {
+  session.save(PREVIEW_TOKEN);
+  trilhaAtiva.set(PREVIEW_TOKEN.usuario.id, 1);
+}

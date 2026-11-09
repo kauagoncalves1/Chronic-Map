@@ -7,6 +7,8 @@
  * abaixo seguem o README. Os marcados com [?] precisam ser conferidos em http://localhost:8000/docs.
  */
 
+import { PREVIEW, PREVIEW_404, previewRequest } from "./preview";
+
 /**
  * Por padrao o navegador chama "/api/..." (mesma origem) e o Next repassa para a API FastAPI
  * (ver rewrites em next.config.ts). Assim nao depende de CORS no back. So defina
@@ -47,6 +49,12 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  // Modo de pre-visualizacao (npm run dev:preview): responde com dados de exemplo, sem chamar o back.
+  if (PREVIEW) {
+    const r = await previewRequest(path, init);
+    if (r === PREVIEW_404) throw new ApiError("Recurso indisponível na pré-visualização.", 404);
+    return r as T;
+  }
   const token = session.token();
   let res: Response;
   try {
