@@ -5,7 +5,7 @@ import { ShieldCheck } from "lucide-react";
 import { AuthShell } from "@/components/AuthShell";
 import { Button, Field } from "@/components/ui";
 import { useToast } from "@/components/Toast";
-import { pending, startSession } from "@/lib/auth";
+import { pending, startSession, trilhaAtiva } from "@/lib/auth";
 import { checkTwoFA, hasTwoFA, PERGUNTAS, saveTwoFA, sorteia, type Fator } from "@/lib/twofa";
 
 /**
@@ -43,7 +43,8 @@ export default function DoisFatoresPage() {
     sessionStorage.removeItem(TRIES);
     pending.clear();
     startSession(p);
-    router.replace("/dashboard");
+    // Usuario novo (sem trilha ativa) comeca pelo questionario; os demais vao ao painel.
+    router.replace(trilhaAtiva.get(p.usuario.id) ? "/dashboard" : "/diagnostico");
   };
 
   async function verificar(e: React.FormEvent) {

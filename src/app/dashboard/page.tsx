@@ -1,25 +1,43 @@
 "use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { ArrowUpRight, Bot, Map as MapIcon, Sparkles, Wand2, type LucideIcon } from "lucide-react";
+import { ArrowUpRight, BookOpen, Bot, Map as MapIcon, Wand2, type LucideIcon } from "lucide-react";
 import { AppPage } from "@/components/AppPage";
 import { SpotlightCard } from "@/components/SpotlightCard";
-import { useSession } from "@/lib/auth";
-import { stagger } from "@/lib/motion";
+import { Button, Card } from "@/components/ui";
+import { trilhaAtiva, useSession } from "@/lib/auth";
+import { fadeUp, stagger } from "@/lib/motion";
 
-/** Painel do usuario: as duas IAs e o mapa/progresso da trilha. */
-const CARDS: { href: string; icon: LucideIcon; titulo: string; texto: string; tag: string }[] = [
-  { href: "/diagnostico", icon: Wand2, titulo: "Criar nova trilha", texto: "Responda o diagnóstico e deixe a IA montar seu plano de estudo.", tag: "IA construtora de trilhas" },
-  { href: "/trilha", icon: MapIcon, titulo: "Minha trilha", texto: "Veja o mapa das etapas, marque exercícios e acompanhe sua evolução.", tag: "Mapa e progresso" },
-  { href: "/tutor", icon: Bot, titulo: "Tutor", texto: "Converse com o tutor para tirar dúvidas sobre a etapa em que você está.", tag: "IA tutor (chat)" },
+/** Painel do usuario: atalhos para o questionario, a trilha, o tutor e o blog. */
+const CARDS: { href: string; icon: LucideIcon; titulo: string; texto: string }[] = [
+  { href: "/diagnostico", icon: Wand2, titulo: "Nova trilha", texto: "Responda o questionário e deixe a IA montar seu plano de estudo." },
+  { href: "/trilha", icon: MapIcon, titulo: "Minha trilha", texto: "Veja o mapa das etapas, marque exercícios e acompanhe sua evolução." },
+  { href: "/tutor", icon: Bot, titulo: "Tutor", texto: "Tire dúvidas sobre a etapa em que você está, direto no chat." },
+  { href: "/blog", icon: BookOpen, titulo: "Dicas de estudo", texto: "Artigos curtos para estudar melhor e manter a constância." },
 ];
 
 export default function DashboardPage() {
   const { user } = useSession();
+  // undefined = ainda checando (evita piscar o aviso); null = sem trilha ativa
+  const [trilha, setTrilha] = useState<number | null | undefined>(undefined);
+  useEffect(() => { if (user) setTrilha(trilhaAtiva.get(user.id)); }, [user]);
+
   return (
     <AppPage title={`Olá, ${user?.nome.split(" ")[0] ?? ""}`} subtitle="O que você quer fazer agora?" wide>
-      <motion.div variants={stagger} initial="hidden" animate="show" className="grid gap-4 md:grid-cols-3">
-        {CARDS.map(({ href, icon: Icon, titulo, texto, tag }) => (
+      {trilha === null && (
+        <motion.div variants={fadeUp} initial="hidden" animate="show" className="mb-6">
+          <Card className="flex flex-col gap-4 border-primary/40 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="font-display text-lg font-semibold">Comece pelo questionário</h2>
+              <p className="mt-1 text-sm text-muted">Conte qual área quer estudar, seu objetivo, seu nível e o tempo que tem. Com isso a IA monta a sua primeira trilha.</p>
+            </div>
+            <Link href="/diagnostico" className="shrink-0"><Button><Wand2 className="size-4" aria-hidden /> Responder agora</Button></Link>
+          </Card>
+        </motion.div>
+      )}
+      <motion.div variants={stagger} initial="hidden" animate="show" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {CARDS.map(({ href, icon: Icon, titulo, texto }) => (
           <Link key={href} href={href} className="block">
             <SpotlightCard className="h-full">
               <div className="flex items-center justify-between">
@@ -28,9 +46,6 @@ export default function DashboardPage() {
               </div>
               <h2 className="mt-5 font-display text-lg font-semibold">{titulo}</h2>
               <p className="mt-2 text-sm text-muted">{texto}</p>
-              <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                <Sparkles className="size-3.5" aria-hidden /> {tag}
-              </span>
             </SpotlightCard>
           </Link>
         ))}

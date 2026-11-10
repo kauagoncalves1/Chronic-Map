@@ -16,7 +16,7 @@ import { tFast } from "@/lib/motion";
  * area -> subarea -> perguntas (com "pergunta n de total" e voltar) -> IA gera -> abre a trilha.
  * Se a IA falhar (RNF04), a tela NAO quebra: mostra o erro e deixa tentar de novo.
  */
-type Passo = "area" | "sub" | "perg" | "gerando";
+type Passo = "area" | "sub" | "perg" | "resumo" | "gerando";
 
 const slide = {
   initial: { opacity: 0, x: 24 },
@@ -79,10 +79,12 @@ export default function DiagnosticoPage() {
 
   const q = perguntas[i];
   const valor = q ? resp[q.campo] ?? "" : "";
-  const prox = () => (i + 1 < perguntas.length ? setI(i + 1) : gerar());
+  const prox = () => (i + 1 < perguntas.length ? setI(i + 1) : setPasso("resumo"));
+  // Texto legivel da resposta (rotulo da opcao escolhida, ou o texto livre).
+  const legivel = (p: Pergunta) => p.opcoes.find((o) => String(o.valor) === resp[p.campo])?.rotulo ?? resp[p.campo] ?? "-";
 
   return (
-    <AppPage title="Criar nova trilha" subtitle="Responda algumas perguntas e a IA monta o seu plano de estudo.">
+    <AppPage title="Questionário da sua trilha" subtitle="Conte sua área, seu objetivo, seu nível e o tempo que tem. A IA usa isso para montar o seu plano de estudo.">
       <AnimatePresence mode="wait">
         {passo === "area" && (
           <motion.div key="area" {...slide}>
@@ -124,11 +126,28 @@ export default function DiagnosticoPage() {
                 )}
                 <div className="mt-8 flex justify-end">
                   <Button onClick={prox} disabled={valor.trim().length < (q.tipo === "texto_livre" ? 3 : 1)}>
-                    {i + 1 < perguntas.length ? <>Próxima <ArrowRight className="size-4" aria-hidden /></> : <>Gerar minha trilha <Sparkles className="size-4" aria-hidden /></>}
+                    {i + 1 < perguntas.length ? <>Próxima <ArrowRight className="size-4" aria-hidden /></> : <>Revisar respostas <Check className="size-4" aria-hidden /></>}
                   </Button>
                 </div>
               </>
             )}
+          </motion.div>
+        )}
+
+        {passo === "resumo" && (
+          <motion.div key="resumo" {...slide}>
+            <Etapa titulo="Confira suas respostas" voltar={() => { setI(Math.max(perguntas.length - 1, 0)); setPasso("perg"); }} />
+            <Card>
+              <dl className="divide-y divide-line">
+                <Linha rotulo="Área" valor={area?.nome ?? "-"} />
+                <Linha rotulo="Subárea" valor={sub?.nome ?? "-"} />
+                {perguntas.map((p) => <Linha key={p.campo} rotulo={p.pergunta} valor={legivel(p)} />)}
+              </dl>
+            </Card>
+            <p className="mt-4 text-sm text-muted">Estas respostas são enviadas à IA apenas para montar a sua trilha.</p>
+            <div className="mt-6 flex justify-end">
+              <Button onClick={gerar}>Gerar minha trilha <Sparkles className="size-4" aria-hidden /></Button>
+            </div>
           </motion.div>
         )}
 
@@ -141,7 +160,7 @@ export default function DiagnosticoPage() {
                   <p className="max-w-md text-muted">{erroGerar}</p>
                   <div className="flex gap-3">
                     <Button onClick={gerar}>Tentar de novo</Button>
-                    <Button variant="ghost" onClick={() => setPasso("perg")}>Revisar respostas</Button>
+                    <Button variant="ghost" onClick={() => setPasso("resumo")}>Revisar respostas</Button>
                   </div>
                 </>
               ) : (
@@ -200,6 +219,16 @@ function Opcoes({
           </button>
         );
       })}
+    </div>
+  );
+}
+
+/** Linha "pergunta / resposta" da tela de conferencia. */
+function Linha({ rotulo, valor }: { rotulo: string; valor: string }) {
+  return (
+    <div className="flex flex-col gap-1 py-3 sm:flex-row sm:justify-between sm:gap-6">
+      <dt className="text-sm text-muted">{rotulo}</dt>
+      <dd className="font-medium sm:max-w-[60%] sm:text-right">{valor}</dd>
     </div>
   );
 }

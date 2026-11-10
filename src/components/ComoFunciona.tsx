@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "motion/react";
-import { Bot, ClipboardList, Map as MapIcon, Sparkles, type LucideIcon } from "lucide-react";
+import { Bot, ClipboardList, Map as MapIcon, type LucideIcon } from "lucide-react";
 import { SpotlightCard } from "./SpotlightCard";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 
@@ -8,7 +8,7 @@ import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
  * Tela principal: como o Chronic Map funciona. Deixa clara a ordem do fluxo e onde entram
  * as DUAS IAs: a construtora de trilhas (passo 2) e o tutor em chat (passo 3).
  */
-const PASSOS: { icon: LucideIcon; n: string; titulo: string; texto: string; ia?: string }[] = [
+const PASSOS: { icon: LucideIcon; n: string; titulo: string; texto: string }[] = [
   {
     icon: ClipboardList,
     n: "01",
@@ -20,14 +20,12 @@ const PASSOS: { icon: LucideIcon; n: string; titulo: string; texto: string; ia?:
     n: "02",
     titulo: "Receba sua trilha",
     texto: "A IA construtora monta um plano em etapas, com exercícios e marcos para você acompanhar.",
-    ia: "IA construtora de trilhas",
   },
   {
     icon: Bot,
     n: "03",
     titulo: "Estude com um tutor",
     texto: "Travou em algo? O tutor responde no chat, sugere materiais e exemplos ligados à sua etapa.",
-    ia: "IA tutor (chat)",
   },
 ];
 
@@ -43,7 +41,7 @@ export function ComoFunciona() {
         </motion.p>
 
         <div className="mt-12 grid gap-4 md:grid-cols-3">
-          {PASSOS.map(({ icon: Icon, n, titulo, texto, ia }) => (
+          {PASSOS.map(({ icon: Icon, n, titulo, texto }) => (
             <SpotlightCard key={n}>
               <div className="flex items-center justify-between">
                 <span className="grid size-11 place-items-center rounded-xl bg-surface-2 text-primary">
@@ -53,11 +51,6 @@ export function ComoFunciona() {
               </div>
               <h3 className="mt-5 font-display text-lg font-semibold">{titulo}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">{texto}</p>
-              {ia && (
-                <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                  <Sparkles className="size-3.5" aria-hidden /> {ia}
-                </span>
-              )}
             </SpotlightCard>
           ))}
         </div>

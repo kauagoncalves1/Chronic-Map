@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { LogOut, Menu, UserRound, X } from "lucide-react";
+import { ChevronDown, LogOut, Menu, ShieldCheck, UserRound, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { AccessibilityBar } from "./AccessibilityBar";
 import { cn } from "@/lib/cn";
@@ -12,15 +12,29 @@ import { endSession, isMaster, useSession } from "@/lib/auth";
 
 type Item = { href: string; label: string };
 
-const PUBLICO: Item[] = [{ href: "/#como-funciona", label: "Como funciona" }, { href: "/login", label: "Entrar" }];
+const PUBLICO: Item[] = [
+  { href: "/#como-funciona", label: "Como funciona" },
+  { href: "/blog", label: "Blog" },
+  { href: "/login", label: "Entrar" },
+];
 
-/** Menu das telas logadas. Perfil master ganha Usuarios e Logs (PDF: master tem mais funcoes). */
-const logado = (master: boolean): Item[] => [
+/** Menu principal das telas logadas (so o essencial; o resto fica no menu do usuario). */
+const LOGADO: Item[] = [
   { href: "/dashboard", label: "Início" },
   { href: "/trilha", label: "Minha trilha" },
   { href: "/tutor", label: "Tutor" },
-  ...(master ? [{ href: "/usuarios", label: "Usuários" }, { href: "/logs", label: "Logs" }] : [{ href: "/senha", label: "Senha" }]),
-  { href: "/modelo-bd", label: "Modelo do BD" },
+  { href: "/blog", label: "Blog" },
+];
+
+/** Menu do usuario. Perfil master ganha "Administracao" (exigida pelo PDF); o comum altera a propria senha. */
+const contaItens = (master: boolean): Item[] => [
+  { href: "/perfil", label: "Meu perfil" },
+  ...(master ? [] : [{ href: "/senha", label: "Alterar senha" }]),
+];
+const ADMIN: Item[] = [
+  { href: "/usuarios", label: "Usuários" },
+  { href: "/logs", label: "Logs de acesso" },
+  { href: "/modelo-bd", label: "Modelo do banco" },
 ];
 
 export function Navbar() {
@@ -29,7 +43,10 @@ export function Navbar() {
   const { user } = useSession();
   const path = usePathname();
   const router = useRouter();
-  const links = user ? logado(isMaster(user)) : PUBLICO;
+  const master = isMaster(user);
+  const links = user ? LOGADO : PUBLICO;
+  const [conta, setConta] = useState(false);
+  const contaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 8);
@@ -38,7 +55,20 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", on);
   }, []);
 
-  useEffect(() => setOpen(false), [path]);
+  useEffect(() => { setOpen(false); setConta(false); }, [path]);
+
+  // Menu do usuario: fecha ao clicar fora ou apertar Esc.
+  useEffect(() => {
+    if (!conta) return;
+    const fora = (e: PointerEvent) => !contaRef.current?.contains(e.target as Node) && setConta(false);
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setConta(false);
+    window.addEventListener("pointerdown", fora);
+    window.addEventListener("keydown", esc);
+    return () => {
+      window.removeEventListener("pointerdown", fora);
+      window.removeEventListener("keydown", esc);
+    };
+  }, [conta]);
 
   useEffect(() => {
     if (!open) return;
@@ -53,7 +83,7 @@ export function Navbar() {
   };
 
   const linkCls = (href: string) =>
-    cn("text-sm font-medium transition-colors hover:text-fg", path === href ? "text-fg" : "text-muted");
+    cn("text-sm font-medium transition-colors hover:text-fg", path === href || (href !== "/" && path.startsWith(`${href}/`)) ? "text-fg" : "text-muted");
 
   return (
     <header
@@ -74,15 +104,50 @@ export function Navbar() {
           ))}
           <AccessibilityBar />
           {user ? (
-            // PDF: login do usuario no canto superior direito + logout em todas as telas
-            <div className="flex items-center gap-2">
-              <span className="flex max-w-40 items-center gap-2 truncate rounded-xl border border-line bg-surface px-3 py-2 text-sm" title={user.email}>
+            // PDF: login do usuario no canto superior direito + logout acessivel em todas as telas
+            <div ref={contaRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setConta((v) => !v)}
+                aria-haspopup="menu"
+                aria-expanded={conta}
+                className="flex max-w-44 items-center gap-2 rounded-xl border border-line bg-surface px-3 py-2 text-sm"
+                title={user.email}
+              >
                 <UserRound className="size-4 shrink-0 text-primary" aria-hidden />
                 <span className="truncate">{user.nome.split(" ")[0]}</span>
-              </span>
-              <button onClick={sair} aria-label="Sair" className="grid size-10 place-items-center rounded-xl hover:bg-surface-2">
-                <LogOut className="size-4" aria-hidden />
+                <ChevronDown className={cn("size-4 shrink-0 text-muted transition-transform", conta && "rotate-180")} aria-hidden />
               </button>
+              <AnimatePresence>
+                {conta && (
+                  <motion.div
+                    role="menu"
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={tFast}
+                    className="absolute right-0 top-full z-50 mt-2 w-60 rounded-2xl border border-line bg-surface p-2 shadow-xl"
+                  >
+                    <p className="truncate px-3 pb-2 pt-1 text-xs text-muted">{user.email}</p>
+                    {contaItens(master).map((l) => (
+                      <Link key={l.href} href={l.href} role="menuitem" className="block rounded-lg px-3 py-2 text-sm hover:bg-surface-2">{l.label}</Link>
+                    ))}
+                    {master && (
+                      <>
+                        <p className="mt-2 flex items-center gap-1.5 border-t border-line px-3 pb-1 pt-3 text-xs font-medium text-muted">
+                          <ShieldCheck className="size-3.5" aria-hidden /> Administração
+                        </p>
+                        {ADMIN.map((l) => (
+                          <Link key={l.href} href={l.href} role="menuitem" className="block rounded-lg px-3 py-2 text-sm hover:bg-surface-2">{l.label}</Link>
+                        ))}
+                      </>
+                    )}
+                    <button onClick={sair} role="menuitem" className="mt-2 flex w-full items-center gap-2 border-t border-line px-3 pb-2 pt-3 text-left text-sm hover:text-danger">
+                      <LogOut className="size-4" aria-hidden /> Sair
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ) : (
             <Link href="/cadastro" className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-fg transition-transform hover:-translate-y-0.5">
@@ -115,7 +180,7 @@ export function Navbar() {
           >
             <div className="flex flex-col gap-1 px-4 py-4">
               {user && <p className="px-3 pb-2 text-sm text-muted">Olá, {user.nome.split(" ")[0]} ({user.email})</p>}
-              {links.map((l) => (
+              {[...links, ...(user ? contaItens(master) : []), ...(user && master ? ADMIN : [])].map((l) => (
                 <Link key={l.href} href={l.href} className="rounded-lg px-3 py-3 font-medium hover:bg-surface-2">{l.label}</Link>
               ))}
               {user ? (
