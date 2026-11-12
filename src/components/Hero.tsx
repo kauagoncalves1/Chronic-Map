@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "motion/react";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { HeroCanvas } from "./HeroCanvas";
 import { WordReveal } from "./WordReveal";
 import { ShinyLink } from "./ShinyLink";
@@ -34,18 +34,11 @@ export function Hero() {
         initial="hidden"
         animate="show"
       >
-        <motion.span
-          variants={fadeUp}
-          className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/70 px-3 py-1.5 text-sm font-medium text-muted backdrop-blur"
-        >
-          <Sparkles className="size-4 text-primary" aria-hidden />
-          Trilhas de estudo com IA
-        </motion.span>
 
         <WordReveal
           text="Seu mapa para aprender qualquer área"
           delay={0.2}
-          className="mt-6 max-w-2xl font-display text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
+          className="max-w-2xl font-display text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
         />
 
         <motion.p variants={fadeUp} className="mt-6 max-w-xl text-lg text-muted">

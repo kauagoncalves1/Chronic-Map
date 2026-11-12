@@ -1,0 +1,16 @@
+# Sobe SOMENTE o front. O back (FastAPI + MySQL) é do outro compose, dos colegas.
+# Uso:  docker compose up --build   ->   http://localhost:3000
+services:
+  web:
+    build:
+      context: .
+      args:
+        # Alvo da API, resolvido pelo servidor do Next (não pelo navegador).
+        # host.docker.internal = back rodando na sua máquina (porta 8000).
+        # Se o back estiver em outro compose/rede, troque por http://NOME_DO_SERVICO:8000
+        API_PROXY_TARGET: ${API_PROXY_TARGET:-http://host.docker.internal:8000}
+    ports:
+      - "3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # necessário no Linux; no Windows/Mac já existe
+    restart: unless-stopped

@@ -4,6 +4,7 @@ import "@fontsource-variable/sora";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { Navbar } from "@/components/Navbar";
+import { ChatWidget } from "@/components/ChatWidget";
 
 export const metadata: Metadata = {
   title: { default: "Chronic Map", template: "%s | Chronic Map" },
@@ -20,7 +21,7 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 const BOOT = `try{var d=document.documentElement,s=localStorage;
 var t=s.getItem('cm-theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
 d.dataset.theme=t;var c=s.getItem('cm-contrast');if(c)d.dataset.contrast=c;
-var f=parseFloat(s.getItem('cm-font')||'1');if(f>=0.875&&f<=1.5)d.style.setProperty('--font-scale',f)}catch(e){}`;
+var f=parseFloat(s.getItem('cm-font')||'1');if(f>=0.5&&f<=1.5)d.style.setProperty('--font-scale',f)}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Navbar />
           <main id="conteudo">{children}</main>
+          <ChatWidget />
         </Providers>
       </body>
     </html>

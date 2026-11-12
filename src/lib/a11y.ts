@@ -7,7 +7,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 
-const FONT_MIN = 0.875;
+const FONT_MIN = 0.5; // 50%
 const FONT_MAX = 1.5;
 const FONT_STEP = 0.125;
 
